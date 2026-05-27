@@ -1,0 +1,400 @@
+/* public/assets/css/dev_dashboard.css */
+:root {
+    --bg-dark: #050e08;
+    --panel-bg: rgba(20, 25, 22, 0.6);
+    --border-color: rgba(34, 197, 94, 0.15);
+    --primary: #22c55e;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar do Estúdio */
+.dashboard-sidebar {
+    width: 280px;
+    background: rgba(0, 0, 0, 0.4);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+}
+
+.studio-profile {
+    text-align: center;
+    padding: 0 24px 24px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 24px;
+}
+
+.studio-profile img {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    border: 2px solid var(--primary);
+    margin-bottom: 12px;
+    background: #111;
+}
+
+.studio-profile h2 {
+    font-size: 18px;
+    margin: 0 0 4px 0;
+    font-weight: 700;
+}
+
+.studio-badge {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Menu de Navegação */
+.dash-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 16px;
+}
+
+.dash-nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dash-nav a:hover, .dash-nav a.active {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--primary);
+}
+
+.dash-nav a.danger-link {
+    color: #ef4444;
+    margin-top: auto;
+}
+
+.dash-nav a.danger-link:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Área Principal */
+.dashboard-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px;
+    background: radial-gradient(circle at top right, rgba(34,197,94,0.03), transparent 40%);
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.dash-title h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: -0.5px;
+}
+
+.dash-title p {
+    color: var(--text-muted);
+    margin: 4px 0 0 0;
+    font-size: 14px;
+}
+
+.btn-upload {
+    background: var(--primary);
+    color: #000;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn-upload:hover {
+    opacity: 0.9;
+}
+
+/* Cards de Estatísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: var(--panel-bg);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 24px;
+    border-radius: 16px;
+}
+
+.stat-title {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.stat-trend.positive { color: var(--primary); font-size: 13px; font-weight: 500; }
+
+/* Tabela/Lista de Jogos */
+.content-section h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 12px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(0,0,0,0.2);
+    border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: 16px;
+}
+
+.empty-state p { color: var(--text-muted); margin-bottom: 20px; }
+
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+.game-card { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; }
+.game-card img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; background: #111; }
+.game-card h3 { margin: 0 0 8px 0; font-size: 16px; color: #fff; }
+.game-card p { font-size: 13px; color: var(--text-muted); margin: 0 0 16px 0; }
+.game-card-actions { display: flex; gap: 8px; }
+.game-card-actions a { flex: 1; text-align: center; padding: 8px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.1); color: #fff; }
+.game-card-actions a:hover { background: rgba(255,255,255,0.2); }
+
+/* =========================================
+   FORMULÁRIOS DO PAINEL (Alturas Corrigidas)
+   ========================================= */
+.dev-form-card {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(20, 25, 22, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px) saturate(180%);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.4);
+    margin: 0 auto; 
+}
+
+.section-title {
+    color: var(--primary);
+    font-size: 18px;
+    margin-top: 32px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 12px;
+}
+
+.form-row { display: flex; gap: 20px; }
+.form-col { flex: 1; }
+.form-group { margin-bottom: 24px; }
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+/* 1. CAMPOS DE UMA LINHA COM ALTURA FIXA E SIMÉTRICA (52px) */
+.form-group input[type="text"], 
+.form-group input[type="number"], 
+.form-group input[type="url"],
+.form-group select {
+    width: 100%;
+    height: 52px; /* A MÁGICA ESTÁ AQUI: Altura cravada */
+    padding: 0 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* 2. TEXTAREA (Permite crescer, não tem altura fixa) */
+.form-group textarea {
+    width: 100%;
+    padding: 16px;
+    min-height: 120px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    resize: vertical; /* Permite o dev aumentar a caixa de texto */
+}
+
+.form-group input:focus, 
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+/* 3. INPUT DO YOUTUBE (Cravado também em 52px) */
+.input-with-prefix {
+    display: flex;
+    align-items: center;
+    height: 52px; /* Exatamente igual aos outros campos! */
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.input-with-prefix:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.prefix-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Preenche os 52px certinho */
+    padding: 0 16px;
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    font-weight: 700;
+    font-size: 14px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    box-sizing: border-box;
+}
+
+.input-with-prefix input {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    flex: 1;
+    height: 100% !important;
+    padding: 0 16px !important;
+}
+
+/* Customização do Select HTML (Seta lateral) */
+.form-group select {
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2322c55e%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px top 50%;
+    background-size: 12px auto;
+    padding-right: 40px;
+    cursor: pointer;
+}
+.form-group select option { background: #111; color: #fff; }
+
+/* Uploads de Ficheiros (Recuperado!) */
+.file-drop-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 160px;
+}
+.file-drop-area:hover, .file-drop-area.dragover { border-color: var(--primary); background: rgba(34, 197, 94, 0.05); }
+.file-drop-area input[type="file"] { display: none; }
+.file-icon { font-size: 36px; margin-bottom: 12px; }
+.file-msg { color: var(--text-muted); font-size: 14px; font-weight: 500; word-break: break-word; }
+
+/* Monetização (Recuperado!) */
+.monetization-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.m-card {
+    background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; color: var(--text-muted);
+}
+.m-card:hover { border-color: rgba(34, 197, 94, 0.5); }
+.m-card input[type="radio"] { display: none; }
+.m-card:has(input[type="radio"]:checked) { border-color: var(--primary); background: rgba(34, 197, 94, 0.05); box-shadow: 0 0 0 1px var(--primary); }
+.m-card:has(input[type="radio"]:checked) .card-title { color: var(--primary); font-weight: 700; }
+.card-title { display: block; font-size: 15px; margin-bottom: 4px; }
+.card-desc { font-size: 12px; opacity: 0.7; }
+
+/* Painel de Preços */
+.price-panel {
+    display: none; padding: 24px; background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05); border-left: 3px solid var(--primary);
+    border-radius: 8px; margin-top: 20px;
+}
+.price-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+/* Botão Submit (Recuperado!) */
+.btn-submit-dev {
+    width: 100%; background-color: var(--primary); color: #000;
+    font-weight: 700; padding: 16px; border: none; border-radius: 8px;
+    font-size: 16px; cursor: pointer; margin-top: 32px; transition: transform 0.1s, opacity 0.2s;
+}
+.btn-submit-dev:hover { opacity: 0.9; transform: translateY(-2px); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Botão secundário de navegação no Header do Dashboard */
+.btn-dash-outline {
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.2s;
+    background: transparent;
+}
+
+.btn-dash-outline:hover {
+    background: rgba(34, 197, 94, 0.1);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+}

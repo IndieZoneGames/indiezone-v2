@@ -1,0 +1,177 @@
+/* PALETA DE CORES E TEMA (Copiado fielmente do test.html) */
+:root, html[data-theme="dark"] {
+    --bg: #06120a;
+    --surface: #0e2014;
+    --surface-hover: #132f1d;
+    --border: #1a3a24;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --accent: #22c55e;
+    --accent-dim: #16a34a;
+    --accent-dark: #15803d;
+    --accent-rgb: 34, 197, 94;
+    --shadow: rgba(0, 0, 0, 0.2);
+    --surface-rgb: 14, 32, 20;
+    --border-rgb: 26, 58, 36;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ESTRUTURA GERAL */
+.container {
+    padding: 40px 24px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 40px;
+    }
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--accent-dim);
+}
+
+/* BOTÕES (Exatamente como no test.html) */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    width: auto; /* Ajuste para a landing page não esticar botões */
+}
+
+.btn:hover {
+    background: var(--accent-dim);
+}
+
+.btn-secondary {
+    background: var(--surface-hover);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--border);
+}
+
+/* CABEÇALHO DA LANDING PAGE */
+.landing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.landing-logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+}
+
+.landing-nav {
+    display: flex;
+    gap: 16px;
+}
+
+/* SESSÃO HERO (Exatamente a estrutura do seu protótipo da loja) */
+.hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--shadow);
+    transition: all 0.2s;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    margin-bottom: 56px;
+    position: relative;
+    min-height: 400px;
+    
+    /* Imagem que você vai gerar */
+    background-size: cover;
+    background-position: center center;
+    background-image: linear-gradient(to right, var(--surface) 20%, rgba(var(--surface-rgb), 0.7) 50%, transparent 100%), url('../img/hero-bg.png');
+}
+
+.hero-content {
+    padding: 32px;
+    z-index: 2;
+    max-width: 60%;
+}
+
+.hero-content h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.hero-content p {
+    font-size: 16px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    max-width: 500px;
+    line-height: 1.7;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 16px;
+}
+
+@media (min-width: 900px) {
+    .hero {
+        background-image: linear-gradient(to right, var(--surface) 30%, rgba(var(--surface-rgb), 0.5) 60%, transparent 100%), url('../img/hero-bg.png');
+        min-height: 450px;
+    }
+    .hero-content {
+        padding: 48px;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        max-width: 100%;
+        padding: 24px;
+    }
+    .hero-actions {
+        flex-direction: column;
+    }
+    .btn {
+        width: 100%;
+    }
+}

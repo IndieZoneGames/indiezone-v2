@@ -1,0 +1,96 @@
+/* --- RESET E BASE --- */
+body { background-color: #050e08; font-family: 'Inter', sans-serif; color: #e2e8f0; margin: 0; }
+
+/* --- HEADER --- */
+.store-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 40px; background: rgba(5, 14, 8, 0.95);
+    border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+    position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px);
+}
+
+.header-left { display: flex; align-items: center; gap: 25px; }
+
+/* Logo IndieZone (900 Weight e Brilho) */
+.store-logo { 
+    font-size: 28px !important; font-weight: 900 !important; color: #22c55e !important; 
+    text-decoration: none !important; letter-spacing: -1.5px !important;
+    text-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+}
+
+/* Busca */
+.search-bar { 
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 8px; padding: 0 16px; width: 320px; height: 40px;
+}
+.search-bar input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 14px; }
+.search-icon { color: #4ade80; font-size: 14px; opacity: 0.8; }
+
+/* BOTÃO CLONADO DA BIBLIOTECA (BLINDADO) */
+.store-header .header-left .btn-nav-header {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #22c55e !important;
+    text-decoration: none !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    background: rgba(34, 197, 94, 0.05) !important;
+    border: 1px solid rgba(34, 197, 94, 0.2) !important;
+    transition: all 0.3s ease;
+    white-space: nowrap !important;
+}
+
+.store-header .header-left .btn-nav-header:hover {
+    background: #22c55e !important;
+    color: #050e08 !important;
+}
+
+/* MENU USUÁRIO (ALINHADO) */
+.user-menu { display: flex !important; align-items: center !important; gap: 15px !important; text-decoration: none !important; color: #e2e8f0 !important; }
+.user-name { font-weight: 700 !important; font-size: 14px !important; display: flex !important; align-items: center !important; }
+.user-avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #22c55e; object-fit: cover; }
+
+/* CATEGORIAS (LINHA ÚNICA) */
+.categories-nav { width: 100%; padding: 15px 0; background: #050e08; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+.nav-scroll-container { display: flex; justify-content: center; gap: 12px; overflow-x: auto; padding: 0 40px; scrollbar-width: none; }
+.nav-scroll-container::-webkit-scrollbar { display: none; }
+.cat-link { 
+    color: #94a3b8; text-decoration: none; font-weight: 600; font-size: 13px; padding: 8px 22px; 
+    border-radius: 50px; background: rgba(255,255,255,0.03); border: 1px solid rgba(34, 197, 94, 0.1); 
+    transition: 0.3s; white-space: nowrap !important;
+}
+.cat-link.active { color: #050e08; background: #22c55e; border-color: #22c55e; }
+
+/* HERO BANNER */
+.hero-banner {
+    width: 100%; height: 550px; margin-bottom: 50px; border-radius: 16px; position: relative; overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(34, 197, 94, 0.2);
+}
+.hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(0deg, #050e08 10%, rgba(5, 14, 8, 0.4) 60%, transparent 100%),
+                linear-gradient(90deg, #050e08 10%, transparent 60%);
+    padding: 60px; display: flex; flex-direction: column; justify-content: flex-end;
+}
+.hero-logo { font-size: 56px; font-weight: 800; color: #fff; margin: 0; }
+.hero-desc { color: #a7f3d0; font-size: 18px; max-width: 500px; line-height: 1.6; }
+.hero-actions { display: flex; align-items: center; gap: 30px; margin-top: 15px; padding-top: 20px; border-top: 1px solid rgba(34, 197, 94, 0.1); }
+.price-now { font-size: 28px; font-weight: 800; color: #fff; }
+.btn-buy { background: #22c55e; color: #000; padding: 16px 36px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 16px; }
+
+/* GRID */
+.store-container { max-width: 1400px; margin: 0 auto; padding: 20px 40px; }
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+.game-card { background: rgba(10, 25, 15, 0.6); border: 1px solid rgba(34, 197, 94, 0.1); border-radius: 12px; overflow: hidden; text-decoration: none; transition: 0.3s; }
+.game-card:hover { transform: translateY(-4px); border-color: #22c55e; }
+.cover-container { width: 100%; height: 180px; background: #0a1a0f; position: relative; }
+.game-cover { width: 100%; height: 100%; object-fit: cover; }
+.no-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(34, 197, 94, 0.05); border: 1px dashed rgba(34, 197, 94, 0.2); color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+.game-info { padding: 16px; }
+.game-title { font-size: 17px; font-weight: 600; color: #fff; margin: 0 0 4px 0; }
+.price-final { color: #22c55e; font-weight: 700; }
+

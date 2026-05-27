@@ -1,0 +1,25 @@
+### --- PYTHON --- ###
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+.env
+
+### --- JAVASCRIPT / NODE (JS/CSS/HTML) --- ###
+node_modules/
+.npm
+dist/
+.parcel-cache/
+
+### --- PHP --- ###
+vendor/
+.phpunit.result.cache
+.php_cs.cache
+
+### --- EDITOR E SISTEMA --- ###
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

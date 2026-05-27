@@ -1,0 +1,169 @@
+/* =========================================
+   BASE.CSS - Variáveis e Estilos Globais
+   ========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Paleta e Temas */
+:root, html[data-theme="dark"] {
+    --bg: #06120a;
+    --surface: #0e2014;
+    --surface-hover: #132f1d;
+    --border: #1a3a24;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --accent: #22c55e;
+    --accent-dim: #16a34a;
+    --accent-dark: #15803d;
+    --accent-rgb: 34, 197, 94;
+    --shadow: rgba(0, 0, 0, 0.2);
+    --surface-rgb: 14, 32, 20;
+    --border-rgb: 26, 58, 36;
+}
+
+html[data-theme="light"] {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-hover: #f9fafb;
+    --border: #e5e7eb;
+    --text: #111827;
+    --text-dim: #6b7280;
+    --accent: #16a34a;
+    --accent-dim: #15803d;
+    --accent-dark: #14532d;
+    --accent-rgb: 22, 163, 74;
+    --shadow: rgba(0, 0, 0, 0.05);
+    --surface-rgb: 255, 255, 255;
+    --border-rgb: 229, 231, 235;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--accent-dim);
+}
+
+/* =========================================
+   COMPONENTES GLOBAIS (Botões e Inputs)
+   ========================================= */
+
+.btn {
+    width: 100%;
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+.btn:hover { background: var(--accent-dim); }
+
+.btn-social {
+    background: rgba(var(--surface-rgb), 0.4);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-weight: 500;
+}
+
+.btn-social:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+}
+
+.input-group { margin-bottom: 20px; }
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-dim);
+}
+
+.input-base, input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 11px 14px;
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.input-base:focus, input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.3);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.msg-info {
+    background: rgba(var(--border-rgb), 0.3); /* Fundo sutil cor da borda */
+    border: 1px solid var(--border);
+    color: var(--text-dim); /* Texto cinza claro */
+}
+
+/* =========================================
+   NOVAS CLASSES: MENSAGENS SUTIS (Sem emoji)
+   ========================================= */
+
+.msg-subtle {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+.msg-error-subtle {
+    border-color: rgba(239, 68, 68, 0.2);
+    color: rgba(239, 68, 68, 0.8);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.msg-success-subtle {
+    border-color: rgba(34, 197, 94, 0.2);
+    color: var(--accent);
+    background: rgba(34, 197, 94, 0.05);
+}

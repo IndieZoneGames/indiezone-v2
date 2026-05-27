@@ -1,0 +1,40 @@
+{
+  "data_export": "2026-05-25T21:06:22.346598",
+  "n_jogos": 1692,
+  "n_tokens_tfidf": 94,
+  "generic_tags": [
+    "clone",
+    "content closed",
+    "content commercial",
+    "content free",
+    "content open",
+    "controller support",
+    "demake",
+    "early access",
+    "engine recreation",
+    "framework",
+    "full controller support",
+    "game engine",
+    "great soundtrack",
+    "indie",
+    "library",
+    "original required",
+    "pc",
+    "port",
+    "remake",
+    "steam achievements",
+    "steam cloud",
+    "tool"
+  ],
+  "generic_genres": [
+    "early-access",
+    "free-to-play",
+    "indie"
+  ],
+  "pesos_score": {
+    "w_content": 0.7,
+    "w_approval": 0.2,
+    "w_reviews": 0.1
+  },
+  "fator_rigor": 3.0
+}

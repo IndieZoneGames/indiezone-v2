@@ -1,0 +1,457 @@
+/* ==========================================================================
+   IndieZone - game_details.css
+   Estilização isolada para a página de detalhes do jogo e avaliações
+   ========================================================================== */
+
+.details-container { 
+    max-width: 1200px; 
+    margin: 40px auto; 
+    padding: 0 20px; 
+    display: grid; 
+    grid-template-columns: 1fr 350px; 
+    gap: 40px; 
+}
+
+/* --- GALERIA DE MÍDIAS E CARROSSEL --- */
+.media-gallery { 
+    margin-bottom: 30px; 
+}
+
+.main-media-view { 
+    width: 100%; 
+    aspect-ratio: 16/9; 
+    background: #000; 
+    border-radius: 12px; 
+    overflow: hidden; 
+    margin-bottom: 15px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    border: 1px solid var(--border); 
+}
+
+.main-media-view iframe, 
+.main-media-view img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    border: none; 
+}
+
+.thumbnails-container { 
+    display: flex; 
+    gap: 10px; 
+    overflow-x: auto; 
+    padding-bottom: 10px; 
+    scrollbar-width: thin; 
+    scrollbar-color: var(--accent) var(--surface); 
+}
+
+.thumbnails-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.thumbnails-container::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.thumbnail { 
+    width: 120px; 
+    height: 67px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    opacity: 0.5; 
+    transition: opacity 0.2s, border-color 0.2s; 
+    border: 2px solid transparent; 
+    object-fit: cover; 
+    flex-shrink: 0; 
+}
+
+.thumbnail:hover { 
+    opacity: 0.8; 
+}
+
+.thumbnail.active { 
+    opacity: 1; 
+    border-color: var(--accent); 
+}
+
+.thumbnail-video { 
+    position: relative; 
+}
+
+.thumbnail-video::after { 
+    content: '▶'; 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    color: white; 
+    font-size: 20px; 
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+    pointer-events: none; 
+}
+
+/* --- TIPOGRAFIA E METADADOS DO CORPO --- */
+.game-title-large { 
+    font-size: 3rem; 
+    font-weight: 900; 
+    margin-bottom: 5px; 
+    color: #fff; 
+}
+
+.game-genre-tag { 
+    display: inline-block; 
+    padding: 4px 12px; 
+    background: var(--accent); 
+    color: #000; 
+    border-radius: 4px; 
+    font-weight: 700; 
+    font-size: 0.8rem; 
+    margin-bottom: 20px; 
+    text-transform: uppercase; 
+}
+
+.game-description { 
+    line-height: 1.8; 
+    color: var(--text-dim); 
+    font-size: 1.1rem; 
+    white-space: pre-line; 
+    margin-top: 20px;
+}
+
+.review-summary { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+}
+
+.stars-display { 
+    display: flex; 
+    gap: 2px; 
+}
+
+.review-text-summary { 
+    color: var(--text-dim); 
+    font-size: 0.9rem; 
+}
+
+/* --- CARD LATERAL DE COMPRA / DOWNLOAD --- */
+.purchase-card { 
+    background: var(--surface); 
+    padding: 30px; 
+    border-radius: 12px; 
+    position: sticky; 
+    top: 100px; 
+    border: 1px solid var(--border); 
+}
+
+.price-big { 
+    font-size: 2rem; 
+    font-weight: 800; 
+    color: #fff; 
+    display: block; 
+    margin-bottom: 20px; 
+}
+
+.btn-checkout { 
+    width: 100%; 
+    display: block; 
+    background: var(--accent); 
+    color: #000; 
+    text-align: center; 
+    padding: 15px; 
+    border-radius: 8px; 
+    font-weight: 800; 
+    text-decoration: none; 
+    transition: background 0.2s, transform 0.2s; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.btn-checkout:hover { 
+    background: #4ade80; 
+}
+
+.btn-checkout:active {
+    transform: scale(0.98);
+}
+
+/* --- CONFIGURAÇÃO DO MODELO PWYW --- */
+.pwyw-container { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+    background: var(--bg); 
+    border: 1px solid var(--border); 
+    border-radius: 8px; 
+    padding: 5px 15px; 
+}
+
+.pwyw-currency { 
+    font-size: 1.2rem; 
+    font-weight: 700; 
+    color: #94a3b8; 
+}
+
+.pwyw-input { 
+    flex: 1; 
+    min-width: 0; 
+    background: transparent; 
+    border: none; 
+    color: #fff; 
+    padding: 10px 0; 
+    font-size: 1.2rem; 
+    font-weight: 700; 
+    outline: none; 
+    width: 100%; 
+}
+
+.pwyw-min-notice { 
+    font-size: 0.8rem; 
+    color: var(--text-dim); 
+    margin-top: -15px; 
+    margin-bottom: 20px; 
+    display: block; 
+}
+
+/* --- ESTILIZAÇÃO COMPLETA DO SELECT DE DOWNLOADS --- */
+.download-select {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 12px 15px;
+    background-color: var(--bg);
+    color: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    box-sizing: border-box;
+}
+
+.download-select:focus {
+    border-color: var(--accent);
+}
+
+.download-select option {
+    background-color: #0e2014;
+    color: #fff;
+    padding: 12px;
+}
+
+/* --- COMPONENTES DE METADADOS --- */
+.game-meta-list { 
+    margin-top: 25px; 
+    padding-top: 20px; 
+    border-top: 1px solid var(--border); 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+}
+
+.meta-item { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    font-size: 0.9rem; 
+}
+
+.meta-label { 
+    color: var(--text-dim); 
+}
+
+.meta-value { 
+    font-weight: 600; 
+    color: #fff; 
+    display: flex; 
+    gap: 8px; 
+    align-items: center; 
+}
+
+.platform-icon { 
+    font-size: 1.1rem; 
+    opacity: 0.8; 
+}
+
+.stage-badge { 
+    padding: 3px 8px; 
+    border-radius: 4px; 
+    font-size: 0.75rem; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    color: #000; 
+}
+
+/* --- BLOCO DE AVALIAÇÕES --- */
+.reviews-section { 
+    grid-column: 1 / -1; 
+    margin-top: 1px; 
+    padding-top: 10px; 
+    border-top: 1px solid var(--border); 
+}
+
+.reviews-title { 
+    font-size: 1.8rem; 
+    font-weight: 800; 
+    color: #fff; 
+    margin-bottom: 30px; 
+}
+
+.review-form-card { 
+    background: var(--surface); 
+    padding: 25px; 
+    border-radius: 12px; 
+    border: 1px solid var(--border); 
+    margin-bottom: 40px; 
+}
+
+.star-rating-input { 
+    display: flex; 
+    flex-direction: row-reverse; 
+    justify-content: flex-end; 
+    gap: 5px; 
+    margin-bottom: 15px; 
+}
+
+.star-rating-input input { 
+    display: none; 
+}
+
+.star-rating-input label { 
+    cursor: pointer; 
+    color: #334155; 
+    font-size: 30px; 
+    transition: color 0.2s; 
+}
+
+.star-rating-input label:hover, 
+.star-rating-input label:hover ~ label, 
+.star-rating-input input:checked ~ label { 
+    color: #f59e0b; 
+}
+
+.review-textarea { 
+    width: 100%; 
+    background: var(--bg); 
+    border: 1px solid var(--border); 
+    color: #fff; 
+    padding: 15px; 
+    border-radius: 8px; 
+    resize: vertical; 
+    min-height: 100px; 
+    font-family: inherit; 
+    margin-bottom: 15px; 
+    box-sizing: border-box; 
+}
+
+.review-textarea:focus { 
+    outline: none; 
+    border-color: var(--accent); 
+}
+
+.review-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+}
+
+.review-card { 
+    background: rgba(14, 32, 20, 0.4); 
+    padding: 20px; 
+    border-radius: 12px; 
+    border: 1px solid var(--border); 
+}
+
+.review-header { 
+    display: flex; 
+    align-items: flex-start; 
+    justify-content: space-between; 
+    margin-bottom: 15px; 
+}
+
+.review-header-left { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+}
+
+.review-avatar { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 1px solid var(--accent); 
+}
+
+.review-author { 
+    font-weight: 700; 
+    color: #fff; 
+    display: block; 
+}
+
+.review-date { 
+    font-size: 0.8rem; 
+    color: var(--text-dim); 
+}
+
+/* Botão Útil no Canto Superior Direito */
+.btn-helpful { 
+    background: transparent; 
+    border: 1px solid transparent; 
+    padding: 4px 10px; 
+    border-radius: 20px; 
+    color: var(--text-dim); 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    font-size: 0.95rem; 
+    transition: background 0.2s, color 0.2s; 
+    user-select: none; 
+}
+
+.btn-helpful:hover { 
+    background: rgba(255, 255, 255, 0.05); 
+}
+
+.btn-helpful.voted { 
+    color: var(--accent); 
+    background: rgba(34, 197, 94, 0.1); 
+    border-color: rgba(34, 197, 94, 0.2); 
+}
+
+.btn-helpful.voted .helpful-count { 
+    font-weight: 700; 
+}
+
+.review-content { 
+    color: #cbd5e1; 
+    line-height: 1.6; 
+}
+
+.btn-load-more { 
+    background: transparent; 
+    border: 1px solid var(--border); 
+    color: var(--text); 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    margin: 30px auto 0; 
+    display: block; 
+    font-weight: 600; 
+    transition: border-color 0.2s, color 0.2s; 
+}
+
+.btn-load-more:hover { 
+    border-color: var(--accent); 
+    color: var(--accent); 
+}

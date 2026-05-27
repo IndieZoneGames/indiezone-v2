@@ -1,0 +1,66 @@
+/* =========================================
+   AUTH.CSS - Layout das telas de Autenticação
+   ========================================= */
+
+.auth-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    
+    /* Imagem de fundo que você vai gerar agora */
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('../img/auth-bg.png');
+    background-size: cover;
+    background-position: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    
+    /* Efeito de Vidro Fosco do seu protótipo original */
+    background: rgba(var(--surface-rgb), 0.7);
+    border: 1px solid rgba(var(--border-rgb), 0.3);
+    backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px var(--shadow);
+    transition: all 0.2s;
+}
+
+.brand {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.brand h1 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+    color: var(--accent);
+}
+
+.brand p {
+    color: var(--text-dim);
+    font-size: 15px;
+}
+
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-dim);
+}
+
+/* Deixa os inputs levemente mais transparentes dentro do box de login */
+.auth-box .input-base {
+    background: rgba(var(--surface-rgb), 0.5);
+    border: 1px solid var(--border);
+}
+
+.auth-box .input-base:focus {
+    background: rgba(var(--surface-rgb), 0.8);
+}
