@@ -12,7 +12,8 @@ if (isset($_POST['login'])) {
   $password = $_POST['password'];
 
   // 1. USO DE PREPARE PARA EVITAR SQL INJECTION
-  $stmt = $conn->prepare("SELECT user_id, display_name, password_hash FROM users WHERE email = ? AND (role = 'dev' OR role = 'admin') LIMIT 1");
+  // [CORREÇÃO CRÍTICA]: Adicionado o campo 'role' no SELECT para mapear o nível de privilégio exato do banco.
+  $stmt = $conn->prepare("SELECT user_id, display_name, password_hash, role FROM users WHERE email = ? AND (role = 'dev' OR role = 'admin') LIMIT 1");
   $stmt->bind_param("s", $email);
   $stmt->execute();
   $result = $stmt->get_result();
@@ -22,9 +23,15 @@ if (isset($_POST['login'])) {
 
     // 2. Verifica a password (usando a coluna correta do teu DB: password_hash)
     if (password_verify($password, $user['password_hash'])) {
+      
+      // [SEGURANÇA AVANÇADA]: Prevenção contra Fixação de Sessão (Session Fixation).
+      // Destrói o ID da sessão antiga não autenticada e gera um novo ID seguro para o usuário logado.
+      session_regenerate_id(true);
+
       $_SESSION['user_id'] = $user['user_id'];
-      // Define a role para garantir que o header reconhece
-      $_SESSION['role'] = 'dev'; 
+      
+      // [CORREÇÃO CRÍTICA]: Agora injeta a role dinâmica ('dev' ou 'admin') em vez de forçar o rebaixamento para 'dev'.
+      $_SESSION['role'] = $user['role']; 
 
       header("Location: dashboard.php");
       exit();

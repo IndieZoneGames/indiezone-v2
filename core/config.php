@@ -25,14 +25,18 @@ ini_set('display_errors', 1);
 /**
  * DETECÇÃO AUTOMÁTICA DA URL 
  */
+/**
+ * DETECÇÃO AUTOMÁTICA DA URL (VERSÃO TEMPORÁRIA PARA FACULDADE)
+ */
 if (!defined('APP_URL')) {
-    // [LÓGICA] O sistema resolve caminhos absolutos dinamicamente com base no host atual. 
-    // Isso evita o "hardcode" de links e garante que o roteamento de assets e formulários funcione sem quebrar a estrutura ao mudar de domínio.
-    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-    $url_host = $_SERVER['HTTP_HOST'];
-    $project_path = str_replace(['/core', '/auth', '/pages', '/dashboard'], '', dirname($_SERVER['SCRIPT_NAME']));
+    // Detecta se o acesso veio por HTTPS seguro (Cloudflare e Ngrok)
+    $protocol = (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
     
-    $final_url = getenv('APP_URL') ?: ($_ENV['APP_URL'] ?? "$protocol://$url_host$project_path/public");
+    $url_host = $_SERVER['HTTP_HOST'];
+    
+    // GAMBIARRA TEMPORÁRIA E SEGURA: Monta o link direto com a sua pasta real
+    $final_url = "$protocol://$url_host/indiezone-main/public";
+    
     define('APP_URL', rtrim($final_url, '/'));
 }
 

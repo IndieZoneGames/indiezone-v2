@@ -1,8 +1,8 @@
 <?php
 // public/dashboard/edit_game.php
-// [ARQUITETURA] Inicializa a proteção de rota e os dados globais. Se a sessão não for de 'dev' ou 'admin', o redirecionamento já acontece no 'dev_header.php'.
+// [ARQUITETURA] Inicializa a proteção de rota e os dados globais.
 require_once("includes/dev_header.php");
-require_once("../../src/backend/SystemLogger.php"); // [AUDITORIA] Inclusão do Logger
+require_once("../../src/backend/SystemLogger.php");
 /** @var mysqli $conn */
 /** @var int $user_id */
 
@@ -12,7 +12,6 @@ $message = '';
 $error = '';
 
 // 1. VERIFICAÇÃO DE SEGURANÇA E CAPTURA DO ID
-// [LÓGICA] Prevenção de quebra de fluxo. A página de edição necessita do parâmetro na URL (?id=X) para operar. Sem ele, a lógica de atualização falharia e exporia erros de banco na tela.
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header("Location: my_games.php");
     exit();
@@ -22,7 +21,6 @@ $game_id = intval($_GET['id']);
 
 // 2. PROCESSAR A ATUALIZAÇÃO
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // [SEGURANÇA] Sanitização do input. Remove caracteres vazios e garante que campos críticos como os inteiros (genre_id) ou valores monetários (price) não sofram SQL Injection explorando formatações anormais.
     $title = trim($_POST['title']);
     $short_description = trim($_POST['short_description']);
     $description = trim($_POST['description']);
@@ -35,17 +33,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $min_price = 0.00;
     $is_pwyw = 0;
 
-    if ($monetization === 'paid') {
-        $price = floatval($_POST['price']);
-    } elseif ($monetization === 'pwyw') {
-        $is_pwyw = 1;
-        $min_price = floatval($_POST['min_price']);
-    }
-
-    // [AUDITORIA] A atualização mexe na capa do jogo, tabela principal de games, gênero e links externos. O begin_transaction garante que o rastro anterior só seja sobrescrito se todas as operações passarem nos testes com sucesso.
     $conn->begin_transaction();
 
     try {
+        // [CORREÇÃO CRÍTICA]: Validação no Back-end (Não confiar no HTML para prevenir valores negativos)
+        if ($monetization === 'paid') {
+            $price = floatval($_POST['price']);
+            if ($price < 1.00) throw new Exception("Preço de venda inválido. O valor mínimo é R$ 1,00.");
+        } elseif ($monetization === 'pwyw') {
+            $is_pwyw = 1;
+            $min_price = floatval($_POST['min_price']);
+            if ($min_price < 0) throw new Exception("O preço mínimo de doação não pode ser negativo.");
+        }
+
         // Atualiza a capa APENAS se o dev tiver enviado uma nova
         $update_cover_sql = "";
         $params = [$title, $short_description, $description, $price, $min_price, $is_pwyw, $release_stage];
@@ -53,14 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
             $upload_dir = '../../public/uploads/covers/';
-            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            // [CORREÇÃO CRÍTICA]: Permissão alterada de 0777 para 0755 (Segurança contra execução remota)
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
             
             $ext = strtolower(pathinfo($_FILES['cover_image']['name'], PATHINFO_EXTENSION));
             $new_filename = uniqid('cover_') . '.' . $ext;
             
             if (move_uploaded_file($_FILES['cover_image']['tmp_name'], $upload_dir . $new_filename)) {
                 $cover_image_url = '../uploads/covers/' . $new_filename;
-                // [LÓGICA] Montagem dinâmica de query SQL para os Prepared Statements. O sistema só anexa o comando de UPDATE de imagem e seus respectivos bind_params se o usuário explicitamente alterou a arte do jogo.
                 $update_cover_sql = ", cover_image_url = ?";
                 $params[] = $cover_image_url;
                 $types .= "s";
@@ -71,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params[] = $user_id;
         $types .= "ii";
 
-        // [SEGURANÇA] Bloqueio contra escalada (IDOR). O 'WHERE' exige não apenas o id do jogo passado pela URL, mas também que aquele jogo seja estritamente do desenvolvedor que está logado ('developer_id = ?'). Isso blinda contra ataques de modificação em massa.
         $sql = "UPDATE games SET title = ?, short_description = ?, description = ?, price = ?, min_price = ?, is_pwyw = ?, release_stage = ? $update_cover_sql WHERE game_id = ? AND developer_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param($types, ...$params);
@@ -81,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Atualizar Gênero
-        // [AUDITORIA] Em vez de tentar rastrear exatamente qual tag sumiu e qual ficou, o sistema simplifica a integridade apagando todas as relações antigas e inserindo os dados frescos sob a nova validação, evitando assim o acúmulo de dados sujos.
         $conn->query("DELETE FROM game_genres WHERE game_id = $game_id");
         if ($genre_id > 0) {
             $stmt_genre = $conn->prepare("INSERT INTO game_genres (game_id, genre_id) VALUES (?, ?)");
@@ -100,15 +98,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Processar Atualização de Screenshots
         if (isset($_FILES['screenshots']['name'][0]) && !empty($_FILES['screenshots']['name'][0])) {
             
-            // [ARQUITETURA] Lógica fundamental para o não-inchamento do servidor de arquivos. Antes de salvar os novos uploads e apagar do banco, o PHP recupera a URL dos antigos arquivos e ordena ao sistema operacional (função unlink) a destruição do lixo binário, poupando espaço.
+            // [CORREÇÃO CRÍTICA]: Proteção contra Path Traversal e exclusão indevida de ficheiros
             $stmt_old_ss = $conn->prepare("SELECT media_url FROM game_media WHERE game_id = ? AND media_type = 'screenshot'");
             $stmt_old_ss->bind_param("i", $game_id);
             $stmt_old_ss->execute();
             $res_old = $stmt_old_ss->get_result();
+            
             while ($row = $res_old->fetch_assoc()) {
-                $file_path = __DIR__ . '/../../public/' . str_replace('../', '', $row['media_url']); 
-                if (file_exists($file_path)) {
-                    unlink($file_path);
+                // basename() limpa caminhos maliciosos (../) e captura apenas o nome final do ficheiro
+                $filename = basename($row['media_url']); 
+                if (!empty($filename)) {
+                    $file_path = __DIR__ . '/../../public/uploads/screenshots/' . $filename; 
+                    if (file_exists($file_path) && is_file($file_path)) {
+                        unlink($file_path);
+                    }
                 }
             }
 
@@ -116,7 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->query("DELETE FROM game_media WHERE game_id = $game_id AND media_type = 'screenshot'");
 
             $upload_dir_ss = '../../public/uploads/screenshots/';
-            if (!is_dir($upload_dir_ss)) mkdir($upload_dir_ss, 0777, true);
+            // [CORREÇÃO CRÍTICA]: Permissão alterada de 0777 para 0755
+            if (!is_dir($upload_dir_ss)) mkdir($upload_dir_ss, 0755, true);
 
             foreach ($_FILES['screenshots']['tmp_name'] as $key => $tmp_name) {
                 if ($_FILES['screenshots']['error'][$key] === UPLOAD_ERR_OK) {
@@ -135,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $conn->commit();
         
-        // [AUDITORIA] Grava o sucesso da atualização do jogo
         $logger->log('DEV_UPDATE_GAME', 'INFO', [
             'user_id' => $user_id,
             'entity_table' => 'games',
@@ -152,7 +155,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $conn->rollback();
         
-        // [AUDITORIA] Grava o erro caso a atualização falhe
         $logger->log('DEV_UPDATE_GAME_ERROR', 'CRITICAL', [
             'user_id' => $user_id,
             'entity_table' => 'games',
@@ -165,7 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // 3. BUSCAR OS DADOS ATUAIS DO JOGO
-// [SEGURANÇA] Bloqueio secundário de Insecure Direct Object Reference (IDOR). O sistema busca para leitura usando não apenas o ID do jogo na URL, mas também validando que aquele registro foi criado pelo `$user_id` logado na sessão.
 $stmt_game = $conn->prepare("SELECT * FROM games WHERE game_id = ? AND developer_id = ?");
 $stmt_game->bind_param("ii", $game_id, $user_id);
 $stmt_game->execute();

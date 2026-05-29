@@ -25,6 +25,9 @@ $pricing_stats = ['paid' => 0, 'free' => 0, 'pwyw' => 0];
 // Estruturas de Tempo Real (7 Dias)
 $chart_traffic_labels = [];
 $chart_traffic_data = [];
+$seven_days_ago = date('Y-m-d', strtotime("-6 days"));
+$today = date('Y-m-d');
+
 for ($i = 6; $i >= 0; $i--) {
     $date = date('Y-m-d', strtotime("-$i days"));
     $chart_traffic_labels[] = date('d/m', strtotime($date));
@@ -74,10 +77,19 @@ if ($total_games > 0) {
         $total_downloads = $row['total'];
     }
 
-    // [DADOS REAIS] Loop de Receita e Downloads Individuais
+    // [CORREÇÃO CRÍTICA]: Fim do N+1 Queries. 
+    // Em vez de rodar um SELECT no banco para CADA jogo no loop abaixo, mapeamos tudo em uma única query.
+    $dls_map = [];
+    $stmt_all_dls = $conn->query("SELECT game_id, COUNT(*) as dls FROM library WHERE game_id IN ($ids_string) GROUP BY game_id");
+    if ($stmt_all_dls) {
+        while ($row = $stmt_all_dls->fetch_assoc()) {
+            $dls_map[$row['game_id']] = (int)$row['dls'];
+        }
+    }
+
+    // [DADOS REAIS] Loop de Receita e Downloads Individuais otimizado (sem bater no banco repetidamente)
     foreach ($games_array as $game) {
-        $stmt_game_down = $conn->query("SELECT COUNT(*) as dls FROM library WHERE game_id = " . $game['game_id']);
-        $dls = $stmt_game_down->fetch_assoc()['dls'] ?? 0;
+        $dls = $dls_map[$game['game_id']] ?? 0;
         
         $receita_jogo = ($dls * $game['price']);
         $receita_estimada += $receita_jogo;
@@ -86,8 +98,9 @@ if ($total_games > 0) {
         $chart_games_revenue[] = (float)$receita_jogo;
     }
 
-    // [DADOS REAIS] Tráfego de Downloads dos Últimos 7 Dias (Usando acquired_at)
-    $q_traf = "SELECT DATE(acquired_at) as dt, COUNT(*) as qtd FROM library WHERE game_id IN ($ids_string) AND acquired_at >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) GROUP BY DATE(acquired_at)";
+    // [CORREÇÃO CRÍTICA]: Tráfego de Downloads dos Últimos 7 Dias (Usando acquired_at)
+    // Otimizado com PHP dates ($seven_days_ago e $today) para prevenir desvio de fuso horário do MySQL
+    $q_traf = "SELECT DATE(acquired_at) as dt, COUNT(*) as qtd FROM library WHERE game_id IN ($ids_string) AND DATE(acquired_at) >= '$seven_days_ago' AND DATE(acquired_at) <= '$today' GROUP BY DATE(acquired_at)";
     $res_traf = $conn->query($q_traf);
     if($res_traf) {
         while($r = $res_traf->fetch_assoc()) {

@@ -1,7 +1,7 @@
 <?php
 // public/dashboard/add_game.php
 
-// [ARQUITETURA] Utiliza o cabeçalho padronizado do dashboard de desenvolvedores. Isso garante que a proteção de rota (verificando se é admin/dev) já tenha sido acionada antes de qualquer processamento desta página.
+// [ARQUITETURA] Utiliza o cabeçalho padronizado do dashboard de desenvolvedores.
 require_once("includes/dev_header.php");
 require_once("../../src/backend/SystemLogger.php"); // [AUDITORIA] Inclusão do Logger
 /** @var mysqli $conn */
@@ -10,14 +10,14 @@ require_once("../../src/backend/SystemLogger.php"); // [AUDITORIA] Inclusão do 
 $logger = new SystemLogger($conn);
 $error = '';
 
-// [LÓGICA] Função para criar slugs amigáveis para SEO e URLs de jogos. Padroniza strings complexas transformando "Ação & Aventura 2!" em "acao-aventura-2", o que facilita o roteamento e evita quebras de URL.
+// [LÓGICA] Função para criar slugs amigáveis para SEO e URLs de jogos.
 function createSlug($string) {
     $string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
     $string = preg_replace('/[^A-Za-z0-9-]+/', '-', $string);
     return strtolower(trim($string, '-'));
 }
 
-// [SEGURANÇA] Validação estrita de tipo MIME utilizando a extensão 'finfo' do PHP. Essa técnica examina a assinatura binária real do arquivo (Magic Bytes) ao invés de apenas confiar na extensão enviada pelo usuário, mitigando falhas onde um script malicioso (como .php) é disfarçado de imagem (.jpg).
+// [SEGURANÇA] Validação estrita de tipo MIME utilizando a extensão 'finfo' do PHP.
 function isImageSafe($tmp_name) {
     $allowed_mime_types = ['image/jpeg', 'image/png', 'image/webp'];
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -30,7 +30,7 @@ function isImageSafe($tmp_name) {
 $res_genres = mysqli_query($conn, "SELECT genre_id, name FROM genres ORDER BY name ASC");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // [SEGURANÇA] Higienização de entrada e tipagem forçada (ex: intval e floatval). Transforma dados potencialmente prejudiciais vindos do formulário em formatos estritamente compatíveis com o banco de dados.
+    // [SEGURANÇA] Higienização de entrada e tipagem forçada.
     $title = trim($_POST['title']);
     $short_description = trim($_POST['short_description']);
     $description = trim($_POST['description']);
@@ -43,16 +43,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $min_price = 0.00;
     $is_pwyw = 0;
 
+    // [CORREÇÃO CRÍTICA]: Validação no Back-end (Não confiar no HTML para prevenir valores negativos)
     if ($monetization === 'paid') {
         $price = floatval($_POST['price']);
+        if ($price < 1.00) throw new Exception("Preço de venda inválido. O valor mínimo é R$ 1,00.");
     } elseif ($monetization === 'pwyw') {
         $is_pwyw = 1;
         $min_price = floatval($_POST['min_price']);
+        if ($min_price < 0) throw new Exception("O preço mínimo de doação não pode ser negativo.");
     }
 
     $slug = createSlug($title);
     
-    // [AUDITORIA] Inicia explicitamente uma Transação de Banco de Dados. Isso garante a propriedade ACID (Atomicidade). A inserção do jogo exige que dados sejam espalhados por até 3 tabelas diferentes ('games', 'game_genres', 'game_media'). Se qualquer uma delas falhar, tudo é desfeito.
+    // [AUDITORIA] Inicia explicitamente uma Transação de Banco de Dados.
     $conn->begin_transaction();
 
     try {
@@ -66,9 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception("A imagem de capa não é num formato válido (apenas JPG, PNG, WEBP).");
             }
             $upload_dir = '../../public/uploads/covers/';
-            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            
+            // [CORREÇÃO CRÍTICA]: Permissão alterada de 0777 para 0755 (Segurança contra execução remota)
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
 
-            // [LÓGICA] Geração de nome único usando 'uniqid()'. Evita a sobrescrita acidental de imagens caso diferentes desenvolvedores enviem arquivos com nomes idênticos (ex: "capa.png").
+            // [LÓGICA] Geração de nome único usando 'uniqid()'.
             $ext = strtolower(pathinfo($_FILES['cover_image']['name'], PATHINFO_EXTENSION));
             $new_filename = uniqid('cover_') . '.' . $ext;
             
@@ -80,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // 2. Inserção do Jogo
-        // [SEGURANÇA] Inserção protegida por Prepared Statements. Além disso, o jogo nasce forçosamente com o status de rascunho ('draft'), garantindo que publicações incompletas não cheguem à vitrine da loja sem aprovação prévia.
         $stmt = $conn->prepare("INSERT INTO games (developer_id, title, slug, short_description, description, price, min_price, is_pwyw, release_stage, cover_image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')");
         $stmt->bind_param("issssdiiss", $user_id, $title, $slug, $short_description, $description, $price, $min_price, $is_pwyw, $release_stage, $cover_image_url);
 
@@ -111,7 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 5. Processamento da Galeria (Screenshots)
         if (!empty($_FILES['screenshots']['name'][0])) {
             $screen_dir = '../../public/uploads/screenshots/';
-            if (!is_dir($screen_dir)) mkdir($screen_dir, 0777, true);
+            
+            // [CORREÇÃO CRÍTICA]: Permissão alterada de 0777 para 0755
+            if (!is_dir($screen_dir)) mkdir($screen_dir, 0755, true);
 
             foreach ($_FILES['screenshots']['tmp_name'] as $key => $tmp_name) {
                 if ($_FILES['screenshots']['error'][$key] === UPLOAD_ERR_OK) {
@@ -124,7 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $media_url = '../uploads/screenshots/' . $s_filename;
                         $display_order = $key + 1; 
                         
-                        // [LÓGICA] Vincula múltiplas mídias ao mesmo ID gerado pelo jogo inserido na etapa 2. Mantém a relação hierárquica usando a variável de controle '$display_order'.
                         $stmt_m = $conn->prepare("INSERT INTO game_media (game_id, media_type, media_url, display_order) VALUES (?, 'screenshot', ?, ?)");
                         $stmt_m->bind_param("isi", $new_game_id, $media_url, $display_order);
                         $stmt_m->execute();
@@ -133,10 +138,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // [AUDITORIA] Confirmação da Transação. Apenas neste exato momento todas as alterações são definitivamente gravadas. Se o script parasse no passo 3, nem a capa do jogo nem o registro principal existiriam no banco.
+        // [AUDITORIA] Confirmação da Transação.
         $conn->commit();
         
-        // [AUDITORIA] Grava o sucesso da criação do jogo na trilha
         $logger->log('DEV_CREATE_GAME', 'INFO', [
             'user_id' => $user_id,
             'entity_table' => 'games',
@@ -152,10 +156,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
 
     } catch (Exception $e) {
-        // [AUDITORIA] Se qualquer exceção for lançada, reverte toda a operação. Isso mantém o banco limpo e livre de "dados órfãos" (ex: um trailer solto sem um jogo principal vinculado).
         $conn->rollback();
         
-        // [AUDITORIA] Grava o erro crítico caso a inserção falhe
         $logger->log('DEV_CREATE_GAME_ERROR', 'CRITICAL', [
             'user_id' => $user_id,
             'new_data' => ['error_message' => $e->getMessage()]
@@ -247,8 +249,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label class="file-drop-area" id="cover-drop">
                         <span class="file-icon" style="font-size: 28px; opacity: 0.8;">🖼️</span>
                         <span class="file-msg" id="cover-msg" style="margin-top: 10px;">Clique para anexar a capa</span>
-                        <input type="file" name="cover_image" id="cover-input" accept=".jpg, .jpeg, .png, .webp" required>
+                        <!-- [CORREÇÃO UX]: Adicionado onchange para preview da imagem -->
+                        <input type="file" name="cover_image" id="cover-input" accept=".jpg, .jpeg, .png, .webp" required onchange="previewCoverImage(this)">
                     </label>
+                    
+                    <!-- [CORREÇÃO UX]: Container para o preview visual da imagem -->
+                    <div id="cover-preview-container" style="display: none; margin-top: 16px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #000;">
+                        <img id="cover-preview" src="" alt="Preview da Capa" style="width: 100%; max-height: 200px; object-fit: cover; display: block;">
+                    </div>
                 </div>
                 
                 <div class="form-col">
@@ -323,6 +331,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (type === 'pwyw') document.getElementById('field-pwyw').classList.add('active');
     }
 
+    // [CORREÇÃO UX]: Função para exibir o preview visual da capa instantaneamente
+    function previewCoverImage(input) {
+        const display = document.getElementById('cover-msg');
+        const previewContainer = document.getElementById('cover-preview-container');
+        const previewImage = document.getElementById('cover-preview');
+
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            display.innerText = "Capa: " + file.name;
+            display.style.color = "var(--primary)";
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewContainer.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            display.innerText = "Clique para anexar a capa";
+            display.style.color = "";
+            previewContainer.style.display = 'none';
+            previewImage.src = "";
+        }
+    }
+
     const setupFileFeedback = (inputId, msgId) => {
         const input = document.getElementById(inputId);
         const msg = document.getElementById(msgId);
@@ -333,7 +366,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     };
 
-    setupFileFeedback('cover-input', 'cover-msg');
     setupFileFeedback('screens-input', 'screens-msg');
 </script>
 

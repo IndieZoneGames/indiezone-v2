@@ -21,7 +21,12 @@ function loadEnv($path)
         // Dividir chave=valor
         list($name, $value) = explode('=', $line, 2);
         $name = trim($name);
+        
+        // Primeiro removemos espaços em branco nas pontas
         $value = trim($value);
+        
+        // [CORREÇÃO] Remove as aspas simples ou duplas que envolvem a string, mantendo os espaços internos intactos.
+        $value = trim($value, "\"'");
 
         // [AUDITORIA] Aplica a regra de precedência de ambiente. Se a variável já foi injetada diretamente pelo servidor, o sistema jamais a sobrescreve com dados do arquivo local. 
         // Isso garante a integridade da configuração de produção e impede que credenciais de teste afetem o ambiente real.
