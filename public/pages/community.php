@@ -23,7 +23,7 @@ $primeiro_nome = explode(' ', $display_name)[0];
 $avatar_url = $_SESSION['avatar_url'] ?? "https://api.dicebear.com/7.x/pixel-art/svg?seed=" . urlencode($_SESSION['username']);
 
 // Link de perfil dinâmico no header
-$header_profile_link = $is_dev ? "../dashboard/dashboard.php" : "index.php";
+$header_profile_link = $is_dev ? "../pages/index.php" : "index.php";
 
 function time_ago($datetime) {
     $time = strtotime($datetime);
@@ -148,7 +148,7 @@ $res_trending_devs = mysqli_query($conn, $query_trending_devs);
                 <span class="search-icon">🔎</span>
                 <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Pesquisar posts ou estúdios...">
             </form>
-            <a href="index.php" class="btn-nav-header">Loja</a>
+            <a href="../index.php" class="btn-nav-header">Loja</a>
             <a href="library.php" class="btn-nav-header">Biblioteca</a>
             <a href="community.php" class="btn-nav-header active" style="color: #22c55e;">Comunidade</a>
         </div>
