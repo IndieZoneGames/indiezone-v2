@@ -1,0 +1,590 @@
+/* =========================================================
+   PROFILE PAGE — INDIEZONE STYLE
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#050e08;
+    color:#f8fafc;
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.profile-hero{
+    position:relative;
+    width:100%;
+    height:380px;
+    overflow:hidden;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+    background:#050e08;
+}
+
+.profile-banner{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:brightness(0.28);
+}
+
+/* Glow verde */
+
+.profile-hero::before{
+    content:"";
+    position:absolute;
+    top:-120px;
+    left:50%;
+    transform:translateX(-50%);
+    width:800px;
+    height:420px;
+
+    background:
+        radial-gradient(
+            ellipse at top,
+            rgba(34,197,94,0.18),
+            transparent 70%
+        );
+
+    z-index:1;
+    pointer-events:none;
+}
+
+.profile-overlay{
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+
+    padding:50px 70px;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(5,14,8,0.96),
+            rgba(5,14,8,0.35),
+            transparent
+        );
+
+    z-index:2;
+}
+
+.profile-left{
+    display:flex;
+    align-items:center;
+    gap:26px;
+}
+
+/* =========================================================
+   BOTÃO VOLTAR
+========================================================= */
+
+.btn-back{
+    position:absolute;
+
+    top:26px;
+    right:70px;
+
+    z-index:100;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    height:42px;
+
+    padding:0 18px;
+
+    border-radius:12px;
+
+    background:
+        rgba(10,15,12,0.72);
+
+    border:
+        1px solid rgba(255,255,255,0.05);
+
+    color:#cbd5e1;
+
+    font-size:14px;
+    font-weight:700;
+
+    backdrop-filter:blur(10px);
+
+    transition:all .22s ease;
+
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.25);
+}
+
+.btn-back:hover{
+
+    background:
+        rgba(34,197,94,0.10);
+
+    border-color:
+        rgba(34,197,94,0.25);
+
+    color:#22c55e;
+
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.profile-avatar{
+    width:140px;
+    height:140px;
+
+    border-radius:28px;
+
+    object-fit:cover;
+
+    background:#111;
+
+    border:
+        2px solid rgba(34,197,94,0.5);
+
+    box-shadow:
+        0 0 35px rgba(34,197,94,0.15);
+
+    transition:all .25s ease;
+}
+
+.profile-avatar:hover{
+
+    transform:scale(1.03);
+
+    border-color:#22c55e;
+
+    box-shadow:
+        0 0 50px rgba(34,197,94,0.25);
+}
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.profile-info h1{
+    font-size:46px;
+    font-weight:900;
+    margin-bottom:12px;
+    letter-spacing:-1px;
+    color:#f8fafc;
+}
+
+.profile-bio{
+    color:#94a3b8;
+    max-width:720px;
+    line-height:1.7;
+    margin-bottom:18px;
+    font-size:15px;
+}
+
+.profile-stats{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+}
+
+.profile-stats span{
+    background:
+        rgba(255,255,255,0.03);
+
+    border:
+        1px solid rgba(255,255,255,0.05);
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    color:#cbd5e1;
+
+    font-size:14px;
+    font-weight:600;
+}
+
+/* =========================================================
+   FOLLOW BUTTON
+========================================================= */
+
+.btn-follow{
+    background:#22c55e;
+    color:#000;
+
+    border:none;
+
+    padding:15px 30px;
+
+    border-radius:14px;
+
+    font-weight:800;
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:all .25s ease;
+
+    box-shadow:
+        0 0 25px rgba(34,197,94,0.25);
+}
+
+.btn-follow:hover{
+
+    transform:translateY(-2px);
+
+    background:#16a34a;
+
+    box-shadow:
+        0 0 40px rgba(34,197,94,0.35);
+}
+
+.btn-follow.following{
+    background:#1e293b;
+    color:#f8fafc;
+    box-shadow:none;
+}
+
+/* =========================================================
+   WRAPPER
+========================================================= */
+
+.page-wrapper{
+    width:95%;
+    max-width:1400px;
+    margin:auto;
+    padding:50px 0;
+}
+
+/* =========================================================
+   TITLES
+========================================================= */
+
+.section-title{
+    font-size:28px;
+    font-weight:800;
+    margin-bottom:24px;
+
+    color:#f8fafc;
+
+    position:relative;
+
+    padding-left:16px;
+}
+
+.section-title::before{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:4px;
+
+    width:4px;
+    height:28px;
+
+    border-radius:20px;
+
+    background:#22c55e;
+}
+
+/* =========================================================
+   GAMES GRID
+========================================================= */
+
+.games-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(300px,1fr));
+
+    gap:24px;
+
+    margin-bottom:70px;
+}
+
+.game-card{
+    background:
+        rgba(20,25,22,0.6);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    backdrop-filter:blur(12px);
+
+    transition:all .3s ease;
+}
+
+.game-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:
+        rgba(34,197,94,0.25);
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.25);
+}
+
+.game-thumb{
+    width:100%;
+    height:200px;
+
+    object-fit:cover;
+
+    transition:transform .3s ease;
+}
+
+.game-card:hover .game-thumb{
+    transform:scale(1.03);
+}
+
+.game-content{
+    padding:22px;
+}
+
+.game-title{
+    font-size:22px;
+    font-weight:800;
+    margin-bottom:10px;
+    color:#f8fafc;
+}
+
+.game-description{
+    color:#94a3b8;
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:22px;
+
+    overflow-wrap:break-word;
+    word-break:break-word;
+}
+
+.game-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.game-price{
+    font-weight:800;
+    font-size:18px;
+    color:#22c55e;
+}
+
+.btn-view{
+    background:
+        rgba(34,197,94,0.12);
+
+    border:
+        1px solid rgba(34,197,94,0.2);
+
+    color:#22c55e;
+
+    padding:10px 18px;
+
+    border-radius:12px;
+
+    font-size:14px;
+    font-weight:700;
+
+    transition:all .2s ease;
+}
+
+.btn-view:hover{
+
+    background:#22c55e;
+    color:#000;
+
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+   POSTS
+========================================================= */
+
+.posts-list{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+}
+
+.post-card{
+    background:
+        rgba(20,25,22,0.6);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    border-radius:20px;
+
+    padding:28px;
+
+    backdrop-filter:blur(12px);
+
+    transition:all .25s ease;
+}
+
+.post-card:hover{
+
+    border-color:
+        rgba(34,197,94,0.18);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.18);
+}
+
+.post-title{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:14px;
+
+    color:#22c55e;
+}
+
+.post-content{
+    color:#cbd5e1;
+
+    line-height:1.8;
+
+    margin-bottom:20px;
+
+    font-size:15px;
+
+    overflow-wrap:break-word;
+    word-break:break-word;
+}
+
+.post-image{
+    width:100%;
+
+    border-radius:16px;
+
+    margin-bottom:20px;
+
+    border:
+        1px solid rgba(255,255,255,0.05);
+}
+
+.post-footer{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+
+    padding-top:16px;
+
+    border-top:
+        1px solid rgba(255,255,255,0.05);
+
+    color:#94a3b8;
+
+    font-size:14px;
+}
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty-box{
+    background:
+        rgba(20,25,22,0.6);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    border-radius:20px;
+
+    padding:50px;
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    backdrop-filter:blur(12px);
+}
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media(max-width:900px){
+
+    .profile-hero{
+        height:auto;
+        min-height:500px;
+    }
+
+    .profile-overlay{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        justify-content:flex-end;
+
+        gap:28px;
+
+        padding:32px 24px;
+    }
+
+    .profile-left{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .profile-info h1{
+        font-size:34px;
+    }
+
+    .profile-avatar{
+        width:110px;
+        height:110px;
+    }
+
+    .profile-stats{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .game-footer{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:14px;
+    }
+
+    .post-footer{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .btn-back{
+        top:18px;
+        right:18px;
+        left:auto;
+    }
+}

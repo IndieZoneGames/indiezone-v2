@@ -51,6 +51,7 @@ $res_library = mysqli_query($conn, $query_lib);
     <link rel="stylesheet" href="../assets/css/base.css">
     <link rel="stylesheet" href="../assets/css/store.css">
     <link rel="stylesheet" href="../assets/css/library.css">
+    <link rel="stylesheet" href="../assets/css/rodape.css">
 </head>
 
 <body data-theme="dark">
@@ -109,89 +110,7 @@ $res_library = mysqli_query($conn, $query_lib);
             <?php endif; ?>
         </div>
     </main>
-    <footer class="store-footer">
-
-        <div class="footer-wrapper">
-
-            <!-- ESQUERDA -->
-            <div class="footer-brand">
-
-                <h2 class="footer-logo">
-                    IndieZone
-                </h2>
-
-                <div class="footer-description">
-
-                    © <?php echo date('Y'); ?> IndieZone Corporation.<br>
-
-                    Plataforma brasileira focada em jogos independentes,
-                    comunidade gamer e publicação de experiências únicas.
-
-                </div>
-
-                <div class="footer-socials">
-
-                    <a href="#">🎮</a>
-                    <a href="#">💬</a>
-                    <a href="#">📢</a>
-                    <a href="#">🔥</a>
-
-                </div>
-
-            </div>
-
-            <!-- DIREITA -->
-            <div class="footer-right">
-
-                <div class="footer-column">
-
-                    <h4>LOJA</h4>
-
-                    <a href="store.php">Página Inicial</a>
-                    <a href="#">Lançamentos</a>
-                    <a href="#">Mais Vendidos</a>
-                    <a href="#">Promoções</a>
-
-                </div>
-
-                <div class="footer-column">
-
-                    <h4>COMUNIDADE</h4>
-
-                    <a href="community.php">Central</a>
-                    <a href="#">Discussões</a>
-                    <a href="#">Workshop</a>
-                    <a href="#">Eventos</a>
-
-                </div>
-
-                <div class="footer-column">
-
-                    <h4>SUPORTE</h4>
-
-                    <a href="#">Ajuda</a>
-                    <a href="#">Privacidade</a>
-                    <a href="#">Termos</a>
-                    <a href="#">Contato</a>
-
-                </div>
-
-                <div class="footer-column">
-
-                    <h4>DESENVOLVEDORES</h4>
-
-                    <a href="#">Publicação</a>
-                    <a href="#">Steamworks BR</a>
-                    <a href="#">Parcerias</a>
-                    <a href="#">Empregos</a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </footer>
+    <?php require_once __DIR__ . '/../partials/rodape.php'; ?>
 </body>
 
 </html>

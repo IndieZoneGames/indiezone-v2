@@ -53,6 +53,7 @@ $res_favs = mysqli_query($conn, $query_favs);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/base.css">
     <link rel="stylesheet" href="../assets/css/store.css">
+    <link rel="stylesheet" href="../assets/css/rodape.css">
 </head>
 
 <body data-theme="dark">
@@ -162,7 +163,7 @@ $res_favs = mysqli_query($conn, $query_favs);
             <?php endif; ?>
         </div>
     </main>
-    
+    <?php require_once __DIR__ . '/../partials/rodape.php'; ?>
 </body>
 
 </html>
