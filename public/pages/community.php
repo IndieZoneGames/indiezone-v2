@@ -44,6 +44,8 @@ $limit = 10;
 $offset = ($page - 1) * $limit;
 
 // 2. CONSTRUÇÃO DA QUERY
+$is_following_tab = ($tab === 'following');
+
 $from_and_joins = "
     FROM community_posts cp
     JOIN developers d ON cp.developer_id = d.user_id
@@ -52,24 +54,42 @@ $from_and_joins = "
 $where_clauses = [];
 
 if ($single_post_id > 0) {
+
     $where_clauses[] = "cp.post_id = $single_post_id";
+
 } else {
-    if ($tab === 'following') {
-        $where_clauses[] = "cp.developer_id IN (SELECT developer_id FROM user_follows WHERE follower_id = $user_id)";
+
+    // 🔥 FOLLOWING (SEM QUEBRAR POSTS)
+    if ($is_following_tab) {
+
+        $where_clauses[] = "
+            cp.developer_id IN (
+                SELECT developer_id 
+                FROM user_follows 
+                WHERE follower_id = $user_id
+            )
+        ";
     }
-    // A aba 'meus_posts' agora vai funcionar 100%
+
+    // 🔥 MEUS POSTS
     if ($tab === 'meus_posts' && $is_dev) {
         $where_clauses[] = "cp.developer_id = $user_id";
     }
+
+    // 🔥 TRENDING
     if ($tab === 'trending') {
         $where_clauses[] = "cp.created_at >= DATE_SUB(NOW(), INTERVAL 14 DAY)";
     }
+
+    // 🔥 SEARCH
     if (!empty($search)) {
         $where_clauses[] = "(cp.title LIKE '%$search%' OR cp.content LIKE '%$search%' OR d.studio_name LIKE '%$search%')";
     }
 }
 
-$where_sql = !empty($where_clauses) ? " WHERE " . implode(" AND ", $where_clauses) : "";
+$where_sql = !empty($where_clauses)
+    ? " WHERE " . implode(" AND ", $where_clauses)
+    : "";
 
 // 3. PAGINAÇÃO
 $count_query = "SELECT COUNT(*) as total " . $from_and_joins . $where_sql;
@@ -124,6 +144,7 @@ $res_trending_devs = mysqli_query($conn, $query_trending_devs);
     <link rel="stylesheet" href="../assets/css/base.css">
     <link rel="stylesheet" href="../assets/css/store.css">
     <link rel="stylesheet" href="../assets/css/community.css">
+    <link rel="stylesheet" href="../assets/css/rodape.css">
     <style>
         .btn-delete-comment { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px; padding: 0 4px; margin-left: auto; opacity: 0.7; transition: opacity 0.2s; }
         .btn-delete-comment:hover { opacity: 1; }
@@ -148,7 +169,7 @@ $res_trending_devs = mysqli_query($conn, $query_trending_devs);
                 <span class="search-icon">🔎</span>
                 <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Pesquisar posts ou estúdios...">
             </form>
-            <a href="../index.php" class="btn-nav-header">Loja</a>
+            <a href="store.php" class="btn-nav-header">Loja</a>
             <a href="library.php" class="btn-nav-header">Biblioteca</a>
             <a href="community.php" class="btn-nav-header active" style="color: #22c55e;">Comunidade</a>
         </div>
@@ -183,15 +204,100 @@ $res_trending_devs = mysqli_query($conn, $query_trending_devs);
             <?php else: ?>
                 <a href="community.php" style="display: inline-block; margin-bottom: 20px; color: #94a3b8; text-decoration: none; font-weight: 600;">← Voltar para todos os posts</a>
             <?php endif; ?>
+      <?php if (!empty($search)): ?>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 class="search-result-title" style="margin: 0;">
+            Resultados para:
+            <span>"<?php echo htmlspecialchars($search); ?>"</span>
+        </h3>
 
-            <?php if (!empty($search)): ?>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3 class="search-result-title" style="margin: 0;">Resultados para: <span>"<?php echo htmlspecialchars($search); ?>"</span></h3>
-                    <a href="community.php" style="color: #ef4444; font-size: 13px; text-decoration: none; font-weight: 600;">Limpar Busca ✖</a>
-                </div>
-            <?php endif; ?>
+        <a href="community.php"
+           style="color: #ef4444; font-size: 13px; text-decoration: none; font-weight: 600;">
+            Limpar Busca ✖
+        </a>
+    </div>
+<?php endif; ?>
 
-            <?php if($res_posts && mysqli_num_rows($res_posts) > 0): ?>
+
+<?php if ($tab === 'following'): ?>
+
+    <?php
+    $query_following_devs = "
+        SELECT d.user_id,
+               d.studio_name,
+               d.studio_logo_url,
+               COUNT(uf2.follower_id) as followers_count
+        FROM user_follows uf
+        JOIN developers d ON uf.developer_id = d.user_id
+        LEFT JOIN user_follows uf2 ON d.user_id = uf2.developer_id
+        WHERE uf.follower_id = $user_id
+        GROUP BY d.user_id
+        ORDER BY d.studio_name ASC
+    ";
+
+    $res_following_devs = mysqli_query($conn, $query_following_devs);
+    ?>
+
+    <div class="sidebar-widget" style="margin-bottom: 20px;">
+
+        <h3 class="widget-title">Estúdios Seguidos</h3>
+
+        <?php if($res_following_devs && mysqli_num_rows($res_following_devs) > 0): ?>
+
+            <ul class="trending-list">
+
+                <?php while($dev = mysqli_fetch_assoc($res_following_devs)): ?>
+
+                    <li class="trending-item">
+
+                        <a href="profile.php?id=<?php echo $dev['user_id']; ?>">
+                            <img
+                                src="<?php echo htmlspecialchars(
+                                    $dev['studio_logo_url']
+                                    ?: 'https://api.dicebear.com/7.x/shapes/svg?seed=' . urlencode($dev['studio_name'])
+                                ); ?>"
+                                class="t-avatar nav-img-hover"
+                                alt="Avatar"
+                            >
+                        </a>
+
+                        <div class="t-info">
+                            <h4>
+                                <a href="profile.php?id=<?php echo $dev['user_id']; ?>" class="nav-link-clean">
+                                    <?php echo htmlspecialchars($dev['studio_name']); ?>
+                                </a>
+                            </h4>
+
+                            <span>
+                                <?php echo $dev['followers_count']; ?> seguidores
+                            </span>
+                        </div>
+
+                        <button
+                            class="btn-follow-small follow-action following"
+                            data-dev-id="<?php echo $dev['user_id']; ?>"
+                        >
+                            Seguindo
+                        </button>
+
+                    </li>
+
+                <?php endwhile; ?>
+
+            </ul>
+
+        <?php else: ?>
+
+            <p class="widget-text">
+                Você ainda não segue nenhum estúdio.
+            </p>
+
+        <?php endif; ?>
+
+    </div>
+
+<?php endif; ?>
+            <?php if($tab !== 'following' && $res_posts && mysqli_num_rows($res_posts) > 0): ?>
                 <?php while($post = mysqli_fetch_assoc($res_posts)): ?>
                     
                     <article class="feed-card-premium" id="post-card-<?php echo $post['post_id']; ?>">
@@ -287,14 +393,14 @@ $res_trending_devs = mysqli_query($conn, $query_trending_devs);
                     </div>
                 <?php endif; ?>
 
-            <?php else: ?>
+           <?php elseif($tab !== 'following'): ?>
                 <div class="empty-feed-premium">
                     <div class="empty-icon">🏜️</div>
                     <h2>Nenhum post encontrado.</h2>
                     <p>
                         <?php 
                             if ($single_post_id > 0) echo "Esta postagem não existe ou foi excluída.";
-                            elseif ($tab === 'following') echo "Os estúdios que você segue ainda não publicaram novidades.";
+                            elseif ($tab === 'following') echo "Você ainda não segue nenhum estúdio.";
                             elseif ($tab === 'meus_posts') echo "Você ainda não publicou nenhuma novidade para a comunidade.";
                             elseif ($tab === 'trending') echo "Ainda não existem postagens recentes em alta. Volte em breve!";
                             else echo "Ainda não existem publicações na comunidade."; 
@@ -336,7 +442,7 @@ $res_trending_devs = mysqli_query($conn, $query_trending_devs);
                             </li>
                         <?php endwhile; ?>
                     </ul>
-                <?php else: ?>
+                <?php elseif($tab !== 'following'): ?>
                     <p class="widget-text" style="text-align: center;">Você já segue todos os principais estúdios!</p>
                 <?php endif; ?>
             </div>
@@ -583,5 +689,7 @@ $res_trending_devs = mysqli_query($conn, $query_trending_devs);
             });
         });
     </script>
+    
+    <?php require_once __DIR__ . '/../partials/rodape.php'; ?>
 </body>
 </html>

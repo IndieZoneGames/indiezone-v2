@@ -51,6 +51,7 @@ $res_library = mysqli_query($conn, $query_lib);
     <link rel="stylesheet" href="../assets/css/base.css">
     <link rel="stylesheet" href="../assets/css/store.css">
     <link rel="stylesheet" href="../assets/css/library.css">
+    <link rel="stylesheet" href="../assets/css/rodape.css">
 </head>
 
 <body data-theme="dark">
@@ -109,7 +110,7 @@ $res_library = mysqli_query($conn, $query_lib);
             <?php endif; ?>
         </div>
     </main>
-    
+    <?php require_once __DIR__ . '/../partials/rodape.php'; ?>
 </body>
 
 </html>
