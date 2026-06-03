@@ -70,7 +70,7 @@ try {
     if ($fila > 10) $alerts[] = ['type' => 'warning', 'msg' => "Atenção: SLA de moderação acumulado ($fila itens na fila)."];
     $response['alerts'] = $alerts;
 
-    // 2. LIQUIDEZ (Dinâmico)
+    // 2. LIQUIDEZ
     $stmt_liq = $conn->prepare("SELECT DATE_FORMAT(created_at, '%Y-%m-%d') as dia, SUM(amount) as total FROM transactions WHERE status = 'completed' AND created_at >= ? GROUP BY dia ORDER BY dia ASC");
     $stmt_liq->bind_param("s", $date_limit); $stmt_liq->execute();
     $res_liq = $stmt_liq->get_result();
@@ -88,7 +88,7 @@ try {
     $heat_series = []; foreach(array_reverse($dias) as $dia) { $pts = []; foreach($heat_data[$dia] as $hora => $val) { $pts[] = ['x' => $hora, 'y' => $val]; } $heat_series[] = ['name' => $dia, 'data' => $pts]; }
     $response['heatmap'] = $heat_series;
 
-    // 4. CRESCIMENTO (Usuários)
+    // 4. CRESCIMENTO
     $stmt_usr = $conn->prepare("SELECT DATE_FORMAT(created_at, '%Y-%m-%d') as dia, role, COUNT(*) as qtd FROM users WHERE created_at >= ? AND role IN ('player','dev') GROUP BY dia, role ORDER BY dia ASC");
     $stmt_usr->bind_param("s", $date_limit); $stmt_usr->execute();
     $res_usr = $stmt_usr->get_result();
@@ -139,7 +139,8 @@ try {
 
     ob_clean();
     $json_output = json_encode($response);
-    file_put_contents($cache_file, $json_output);
+    // [SEGURANÇA] LOCK_EX impede que a leitura e escrita corrompam o JSON do dashboard.
+    file_put_contents($cache_file, $json_output, LOCK_EX);
     echo $json_output;
 
 } catch (Exception $e) {

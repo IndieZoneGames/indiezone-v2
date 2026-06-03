@@ -1,34 +1,60 @@
 /* public/assets/css/admin.css */
+
+/* ==========================================================================
+   1. BASE E VARIÁVEIS GERAIS
+   ========================================================================== */
 body {
-    background-color: #050e08; color: #e2e8f0; font-family: 'Inter', sans-serif; margin: 0; padding: 0;
+    background-color: #050e08; 
+    color: #e2e8f0; 
+    font-family: 'Inter', sans-serif; 
+    margin: 0; 
+    padding: 0;
 }
 
 .admin-container {
-    max-width: 1280px; margin: 40px auto; padding: 0 20px;
+    max-width: 1280px; 
+    margin: 40px auto; 
+    padding: 0 20px;
 }
 
-.admin-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
+/* ==========================================================================
+   2. NAVBAR E CABEÇALHO
+   ========================================================================== */
+.top-navbar {
+    background: rgba(5, 14, 8, 0.95);
+    padding: 16px 40px;
+    border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.admin-title { color: #22c55e; font-size: 28px; font-weight: 800; margin: 0; }
 
-/* Cards de Estatísticas (Dashboard) */
-.stats-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;
-}
-.stat-card {
-    background: rgba(10, 25, 15, 0.6); border: 1px solid rgba(34, 197, 94, 0.2);
-    border-radius: 12px; padding: 24px; display: flex; align-items: center; gap: 20px;
-}
-.stat-icon {
-    width: 60px; height: 60px; border-radius: 12px; background: rgba(34, 197, 94, 0.1);
-    color: #22c55e; display: flex; align-items: center; justify-content: center; font-size: 28px;
-}
-.stat-info h3 { margin: 0; font-size: 32px; color: #fff; font-weight: 800; }
-.stat-info p { margin: 4px 0 0 0; color: #94a3b8; font-size: 14px; font-weight: 600; text-transform: uppercase;}
+.navbar-brand { display: flex; align-items: center; gap: 15px; }
+.navbar-brand-icon { font-size: 24px; }
+.navbar-title { color: #22c55e; font-size: 24px; font-weight: 800; margin: 0; }
 
-/* Abas */
-.admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.navbar-actions { display: flex; align-items: center; gap: 20px; }
+.btn-noc {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+.btn-back-sys { color: #e2e8f0; text-decoration: none; font-weight: 500; }
+
+/* ==========================================================================
+   3. NAVEGAÇÃO DE ABAS (TABS)
+   ========================================================================== */
+.admin-tabs { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+    border-bottom: 1px solid rgba(255,255,255,0.1); 
+}
 .tab-btn {
     background: transparent; border: none; color: #94a3b8; font-size: 15px; font-weight: 600;
     padding: 12px 24px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s;
@@ -36,23 +62,125 @@ body {
 .tab-btn:hover { color: #fff; }
 .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
 
-/* Tabela de Dados */
+.tab-badge { padding: 2px 6px; border-radius: 10px; font-size: 11px; margin-left: 5px; font-weight: bold; }
+.tab-badge-danger { background: #ef4444; color: white; }
+.tab-badge-warning { background: #facc15; color: black; }
+.tab-badge-success { background: #4ade80; color: black; }
+
+/* ==========================================================================
+   4. SISTEMA DE ALERTAS E FEEDBACK
+   ========================================================================== */
+#alert-container { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 10px;}
+.sys-alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; animation: fadeIn 0.4s; }
+.alert-danger { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #f87171; }
+.alert-warning { background: rgba(250, 204, 21, 0.1); border: 1px solid #facc15; color: #fde047; }
+
+.flash-message {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid #22c55e;
+    color: #4ade80;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   5. CONTROLES DO DASHBOARD
+   ========================================================================== */
+.dashboard-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 15px; }
+.controls-group { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.controls-group-right { width: 100%; justify-content: flex-end; }
+.filter-label { color:#22c55e; font-size:13px; font-weight:600; }
+
+.select-modern { 
+    background: #050e08; color: #e2e8f0; border: 1px solid #1a3a24; 
+    padding: 10px 14px; border-radius: 8px; font-family: 'Inter', sans-serif; 
+    font-size: 13px; outline: none; cursor: pointer; transition: 0.2s;
+}
+.select-modern:focus { border-color: #22c55e; }
+
+.btn-refresh { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; }
+.btn-refresh:hover { background: #22c55e; color: #000; }
+.btn-pdf { background: #22c55e; color: #050e08; border: 1px solid #16a34a; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; transition: 0.2s; }
+.btn-pdf:hover { background: #4ade80; }
+.last-updated { font-size: 12px; color: #64748b; font-weight: 500;}
+
+/* ==========================================================================
+   6. KPIS E GRÁFICOS (BI)
+   ========================================================================== */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+.kpi-card { background: rgba(10, 25, 15, 0.8); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; padding: 24px; position: relative; }
+.kpi-title { color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px dashed #22c55e; display: inline-block; cursor: help; }
+.kpi-value { color: #fff; font-size: 30px; font-weight: 800; line-height: 1; margin-bottom: 8px; }
+.kpi-currency { font-size: 16px; }
+.kpi-desc { font-size: 12px; color: #94a3b8; }
+
+.kpi-card-warning { border-color: rgba(250, 204, 21, 0.3); }
+.kpi-title-warning { border-color: #facc15; }
+.kpi-value-warning, .kpi-desc-warning { color: #facc15; }
+.kpi-value-success { color:#4ade80; }
+
+.charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 24px; background: rgba(0,0,0,0.2); border-radius: 12px;}
+.chart-box { background: rgba(5, 14, 8, 0.8); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; position: relative; display: block; }
+.chart-full { grid-column: 1 / -1; }
+.chart-header h4 { margin: 0; color: #e2e8f0; font-size: 15px; font-weight: 700; }
+.chart-header p { margin: 4px 0 15px 0; color: #64748b; font-size: 12px; }
+
+.chart-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 14, 8, 0.8); display: flex; justify-content: center; align-items: center; border-radius: 12px; z-index: 5; color: #22c55e; font-weight: 600; opacity: 0; pointer-events: none; transition: 0.3s; }
+.chart-loader.active { opacity: 1; pointer-events: all; }
+
+/* ==========================================================================
+   7. TABELAS E LISTAGENS
+   ========================================================================== */
 .table-container {
     background: rgba(10, 25, 15, 0.6); border: 1px solid rgba(34, 197, 94, 0.15);
     border-radius: 12px; overflow: hidden; display: none; animation: fadeIn 0.3s ease;
 }
 .table-container.active { display: block; }
+.tab-overview-container { background: transparent; border: none; overflow: visible; padding: 0; }
+
 table { width: 100%; border-collapse: collapse; text-align: left; }
 th { background: rgba(0,0,0,0.4); padding: 16px 20px; color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 td { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; color: #e2e8f0; vertical-align: middle; }
 tr:hover { background: rgba(34, 197, 94, 0.03); }
 
+.search-container { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2); }
+.search-input { width: 100%; max-width: 400px; padding: 12px 16px 12px 40px; border-radius: 8px; background: rgba(0,0,0,0.4) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2394a3b8" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>') no-repeat 14px center; border: 1px solid rgba(34, 197, 94, 0.2); color: #fff; font-family: inherit; font-size: 14px; transition: all 0.2s; }
+.search-input:focus { outline: none; border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15); }
+.empty-state { padding: 40px; text-align: center; color: #94a3b8; }
+
+/* Elementos Internos de Tabela */
+.col-id { width: 60px; }
+.cell-id { color: #94a3b8; font-weight: 600; }
 .user-cell { display: flex; align-items: center; gap: 12px; }
 .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #22c55e; background: #000; }
 .user-name { font-weight: 600; color: #fff; display: block; }
-.user-nick { color: #64748b; font-size: 12px; }
+.user-nick { color: #64748b; font-size: 12px; display: block; }
 
-/* Badges (Etiquetas de Status) */
+.studio-name-highlight { color: #facc15; font-size: 16px; font-weight: bold; }
+.doc-number { font-family: monospace; font-size: 12px; color: #94a3b8; }
+.portfolio-link { color: #22c55e; font-size: 12px; font-weight: 600; text-decoration: none; }
+
+.details-box summary { cursor: pointer; color: #22c55e; font-weight: 600; font-size: 12px; margin-top: 8px; outline: none;}
+.details-box p { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 6px; font-size: 12px; color: #94a3b8; margin-top: 5px; border: 1px solid rgba(255,255,255,0.1); max-height: 80px; overflow-y: auto;}
+
+.game-info-wrapper { display: flex; align-items: center; gap: 10px; }
+.game-cover-mini { width: 60px; height: 35px; border-radius: 4px; object-fit: cover; }
+.game-title-main { color: #fff; font-size: 14px; font-weight: bold; }
+.game-stage-sub { display: block; font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+.studio-text { color: #cbd5e1; }
+.price-highlight { color: #4ade80; font-weight: bold; }
+
+.pay-key-box { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 6px; border: 1px dashed rgba(255,255,255,0.2); font-family: monospace; font-size: 14px; color: #facc15; display: inline-block; }
+.withdraw-amount { color: #4ade80; font-size: 18px; font-weight: bold; }
+
+/* ==========================================================================
+   8. BADGES E STATUS
+   ========================================================================== */
 .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
 .badge-admin { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
 .badge-dev { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
@@ -61,15 +189,50 @@ tr:hover { background: rgba(34, 197, 94, 0.03); }
 .badge-inactive { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
 .badge-pending { background: rgba(250, 204, 21, 0.15); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
 
-/* Ações */
+/* ==========================================================================
+   9. BOTÕES DE AÇÃO
+   ========================================================================== */
 .actions { display: flex; gap: 8px; }
+.actions-col { display: flex; flex-direction: column; gap: 5px; }
+.form-inline { display: inline; margin: 0; }
+.w-100 { width: 100%; }
+.mt-5 { margin-top: 5px; }
+
 .btn-action { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; border: none; }
 .btn-approve { background: #22c55e; color: #000; }
 .btn-approve:hover { background: #16a34a; }
 .btn-reject { background: transparent; color: #ef4444; border: 1px solid #ef4444; }
 .btn-reject:hover { background: #ef4444; color: #fff; }
+.btn-reject-alt { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid transparent; }
+.btn-reject-alt:hover { background: #ef4444; color: #fff; }
 .btn-neutral { background: rgba(255,255,255,0.1); color: #fff; }
 .btn-neutral:hover { background: rgba(255,255,255,0.2); }
 
+.text-untouchable { color: #64748b; font-size: 12px; font-style: italic; }
+
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ==========================================================================
+   10. MEDIA QUERIES E IMPRESSÃO (PDF)
+   ========================================================================== */
+@media print {
+    @page { size: landscape; margin: 10mm; } 
+    body { background: #050e08 !important; color: #e2e8f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .top-navbar, .admin-tabs, .dashboard-header, .search-container, .btn-action, form, .flash-message { display: none !important; }
+    .admin-container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    .table-container { display: none !important; }
+    #tab-overview { display: block !important; background: transparent !important; border: none !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    .kpi-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 15px !important; }
+    .charts-grid { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 20px !important; background: transparent !important; }
+    .chart-box { background: rgba(5, 14, 8, 0.9) !important; border: 1px solid rgba(34, 197, 94, 0.2) !important; page-break-inside: avoid !important; width: 100% !important; }
+    .chart-full { grid-column: 1 / -1 !important; }
+}
+
+@media (max-width: 1024px) { 
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); } 
+    .charts-grid { grid-template-columns: 1fr; } 
+    .chart-full { grid-column: 1; } 
+}
+@media (max-width: 600px) { 
+    .kpi-grid { grid-template-columns: 1fr; } 
+}

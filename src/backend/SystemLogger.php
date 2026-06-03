@@ -39,8 +39,7 @@ class SystemLogger
 
     private function getRealIpAddress(): ?string
     {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
-        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        // [SEGURANÇA TCC] Protegido contra IP Spoofing de Headers HTTP, utilizando o endereço puro da requisição.
         return $_SERVER['REMOTE_ADDR'] ?? null;
     }
 }
