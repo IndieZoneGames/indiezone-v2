@@ -59,8 +59,8 @@ if (!empty($search)) {
 }
 
 if (!empty($genre_selecionado)) {
-    // NOTA: Baseado no código original. Veja a observação no final da resposta.
-    $query_favs .= " AND g.genre_id = ?"; 
+    // [CORREÇÃO] A coluna genre_id não existe na tabela games, está na tabela associativa game_genres.
+    $query_favs .= " AND g.game_id IN (SELECT game_id FROM game_genres WHERE genre_id = ?)"; 
     $types .= "i";
     $params[] = (int)$genre_selecionado;
 }
