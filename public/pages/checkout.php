@@ -63,7 +63,7 @@ $session = \Stripe\Checkout\Session::create([
     'mode' => 'payment',
 
     'success_url' =>
-        'http://localhost/indiezone-main/public/pages/library.php?game_id=' . $game_id,
+        'http://localhost/indiezone-main/public/pages/payment_success.php?game_id=' . $game_id,
 
     'cancel_url' =>
         'http://localhost/indiezone-main/public/pages/game_details.php?id=' . $game_id,
