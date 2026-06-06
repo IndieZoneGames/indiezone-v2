@@ -1,8 +1,7 @@
 <!-- FONT AWESOME -->
 <link
     rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-/>
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
 <footer class="store-footer">
 
@@ -105,13 +104,9 @@
                     Ajuda
                 </a>
 
-                <a href="#">
-                    Privacidade
-                </a>
-
-                <a href="#">
-                    Termos
-                </a>
+                <a href="<?php echo APP_URL; ?>/pages/privacidade.php">Privacidade</a>
+                
+                <a href="<?php echo APP_URL; ?>/pages/termos.php">Termos</a>
 
                 <a href="#">
                     Contato
@@ -147,4 +142,3 @@
     </div>
 
 </footer>
-

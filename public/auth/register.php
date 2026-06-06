@@ -42,11 +42,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     if (empty($display_name) || empty($username) || empty($email) || empty($birth_date) || empty($raw_password)) {
         $message = "❌ Por favor, preencha todos os campos obrigatórios.";
     } 
-    // 2. Validação de formato de E-mail
+    // 2. Validação do Aceite dos Termos (NOVO)
+    elseif (!isset($_POST['accept_terms'])) {
+        $message = "❌ Você precisa concordar com os Termos de Uso e a Política de Privacidade para criar uma conta.";
+    }
+    // 3. Validação de formato de E-mail
     elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message = "❌ Por favor, insira um e-mail válido.";
     }
-    // 3. Validação de Idade (Mínimo 16 anos e ano base 1920)
+    // 4. Validação de Idade (Mínimo 16 anos e ano base 1920)
     else {
         // [LÓGICA] O backend recalcula e verifica rigorosamente as datas submetidas, desconfiando do cliente. 
         // Isso evita que usuários mal-intencionados burlem o bloqueio de idade manipulando o HTML (via DevTools).
@@ -61,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         } elseif ($age < 16) {
             $message = "❌ Você precisa ter pelo menos 16 anos para se cadastrar.";
         } 
-        // 4. Validação de Força da Senha
+        // 5. Validação de Força da Senha
         elseif (!preg_match($password_regex, $raw_password)) {
             $message = "❌ A senha deve ter no mínimo 8 caracteres, com letra maiúscula, minúscula, número e caractere especial.";
         } else {
@@ -93,7 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
             } else {
                 // [AUDITORIA] A entidade do usuário nasce com 'is_active = 0'. Isso documenta na base que a conta existe, 
                 // mas cria uma barreira (quarentena) onde nenhuma ação no sistema pode ser tomada até que o processo de verificação gere um log de ativação (UPDATE is_active = 1).
-                $stmt_insert = $conn->prepare("INSERT INTO users (display_name, username, email, password_hash, birth_date, verification_code, is_active, role, avatar_url) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)");
+                // [NOVO] Adicionado accepted_terms_at e accepted_privacy_at recebendo CURRENT_TIMESTAMP
+                $stmt_insert = $conn->prepare("INSERT INTO users (display_name, username, email, password_hash, birth_date, verification_code, is_active, role, avatar_url, accepted_terms_at, accepted_privacy_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
                 $stmt_insert->bind_param("ssssssss", $display_name, $username, $email, $password_hash, $birth_date, $verification_code, $role, $avatar_url);
 
                 if ($stmt_insert->execute()) {
@@ -234,6 +239,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
                             Use maiúsculas, minúsculas, números e símbolos.
                         </small>
                     </div>
+                    
+                    <div class="input-group checkbox-container" style="display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; margin-bottom: 24px;">
+                        <input type="checkbox" name="accept_terms" id="accept_terms" required style="margin-top: 4px; width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;">
+                        <label for="accept_terms" style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 0; font-weight: 400; cursor: pointer;">
+                            Li e concordo com os <a href="../pages/termos.php" target="_blank" style="color: var(--accent); text-decoration: underline;">Termos de Uso</a> e a <a href="../pages/privacidade.php" target="_blank" style="color: var(--accent); text-decoration: underline;">Política de Privacidade</a> do IndieZone.
+                        </label>
+                    </div>
+
                     <button type="submit" name="register" class="btn">Criar Minha Conta</button>
                 </form>
                 <div class="auth-footer">

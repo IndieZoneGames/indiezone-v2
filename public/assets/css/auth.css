@@ -18,8 +18,8 @@
 
 .auth-box {
     width: 100%;
-    max-width: 420px;
-    padding: 40px;
+    max-width: 550px;
+    padding: 20px;
     
     /* Efeito de Vidro Fosco do seu protótipo original */
     background: rgba(var(--surface-rgb), 0.7);

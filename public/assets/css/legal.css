@@ -1,0 +1,132 @@
+/* public/assets/css/legal.css */
+
+.legal-header-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background: rgba(5, 14, 8, 0.95);
+    border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+}
+
+.legal-logo {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -1px;
+}
+
+.legal-nav-auth {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.legal-btn-login {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.legal-btn-login:hover { color: var(--accent); }
+
+.legal-btn-register {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.legal-btn-register:hover {
+    background: var(--accent);
+    color: #000;
+}
+
+.legal-container {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 50px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 20px 40px var(--shadow);
+}
+
+.legal-container h1 {
+    color: var(--text);
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.legal-date {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 40px;
+    display: block;
+}
+
+.legal-container h2 {
+    color: var(--accent);
+    font-size: 20px;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.legal-container h3 {
+    color: #fff;
+    font-size: 16px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+}
+
+.legal-container p {
+    color: #cbd5e1;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    font-size: 15px;
+}
+
+.legal-container ul {
+    padding-left: 20px;
+    margin-bottom: 24px;
+}
+
+.legal-container li {
+    color: #cbd5e1;
+    line-height: 1.7;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.legal-container strong {
+    color: #fff;
+}
+
+/* Destaque para o aviso de TCC */
+.legal-warning {
+    background: rgba(251, 191, 36, 0.1);
+    border-left: 4px solid #fbbf24;
+    padding: 16px 20px;
+    border-radius: 4px;
+    margin-bottom: 30px;
+}
+
+.legal-warning p {
+    margin: 0;
+    color: #fde68a;
+}

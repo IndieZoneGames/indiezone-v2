@@ -97,7 +97,7 @@ $res_library = mysqli_query($conn, $query_lib);
                                 <span style="font-size: 11px; color: #64748b;">
                                     <?php echo $game['playtime_minutes']; ?> min jogados
                                 </span>
-                                <button class="btn-buy" style="padding: 8px 16px; font-size: 13px;">Jogar</button>
+                                <a href="game_details.php?id=<?php echo $game['game_id']; ?>" class="btn-buy" style="padding: 8px 16px; font-size: 13px;">Jogar</a>
                             </div>
                         </div>
                     </div>
