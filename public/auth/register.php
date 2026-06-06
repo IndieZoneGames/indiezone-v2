@@ -21,7 +21,7 @@ $message = "";
 $success_state = false; 
 
 // [LÓGICA] Calcula a data limite dinamicamente baseada no dia de hoje para travar o calendário no frontend HTML.
-$max_date = date('Y-m-d', strtotime('-18 years'));
+$max_date = date('Y-m-d', strtotime('-16 years'));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message = "❌ Por favor, insira um e-mail válido.";
     }
-    // 3. Validação de Idade (Mínimo 18 anos e ano base 1920)
+    // 3. Validação de Idade (Mínimo 16 anos e ano base 1920)
     else {
         // [LÓGICA] O backend recalcula e verifica rigorosamente as datas submetidas, desconfiando do cliente. 
         // Isso evita que usuários mal-intencionados burlem o bloqueio de idade manipulando o HTML (via DevTools).
@@ -58,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
             $message = "❌ Data de nascimento inválida.";
         } elseif ((int)$dob->format('Y') < 1920) {
             $message = "❌ O ano de nascimento deve ser a partir de 1920.";
-        } elseif ($age < 18) {
-            $message = "❌ Você precisa ter pelo menos 18 anos para se cadastrar.";
+        } elseif ($age < 16) {
+            $message = "❌ Você precisa ter pelo menos 16 anos para se cadastrar.";
         } 
         // 4. Validação de Força da Senha
         elseif (!preg_match($password_regex, $raw_password)) {
