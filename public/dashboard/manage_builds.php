@@ -35,7 +35,24 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 }
 
 $game_id = intval($_GET['id']);
+
+// --- SISTEMA ANTI-F5 (PRG) COM TRATAMENTO SILENCIOSO DE ERROS ---
 $message = "";
+if (isset($_GET['msg'])) {
+    if ($_GET['msg'] === 'upload_ok') {
+        $message = "✅ Sucesso! Ficheiro enviado para a nuvem e salvo no banco de dados.";
+    } elseif ($_GET['msg'] === 'upload_local') {
+        $message = "✅ Sucesso! (Modo de Segurança). Ficheiro processado e salvo localmente no servidor.";
+    } elseif ($_GET['msg'] === 'review_ok') {
+        $message = "✅ Sucesso! O jogo foi enviado para a equipa de Moderação.";
+    } elseif ($_GET['msg'] === 'err_local_perm') {
+        $message = "❌ Falha (Plano B): O servidor bloqueou a criação da pasta. Verifique as permissões (chmod) da pasta 'uploads'.";
+    } elseif ($_GET['msg'] === 'err_local_move') {
+        $message = "❌ Falha (Plano B): Não foi possível mover o arquivo para o disco local.";
+    } elseif ($_GET['msg'] === 'err_db') {
+        $message = "❌ Erro Crítico: O ficheiro foi salvo, mas o banco de dados recusou o registro.";
+    }
+}
 
 // --- FUNÇÃO PARA BUSCAR OU CRIAR PASTAS NO DRIVE ---
 function getOrCreateDriveFolder($driveService, $folderName, $parentId) {
@@ -81,15 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
         $stmt_update = $conn->prepare("UPDATE games SET status = 'pending' WHERE game_id = ?");
         $stmt_update->bind_param("i", $game_id);
         if ($stmt_update->execute()) {
-            $game['status'] = 'pending';
-            $message = "✅ Sucesso! O jogo foi enviado para a equipa de Moderação.";
+            echo "<script>window.location.href = 'manage_builds.php?id=" . $game_id . "&msg=review_ok';</script>";
+            exit();
         }
     } else {
         $message = "❌ Erro: Você precisa fazer o upload de pelo menos um ficheiro antes de enviar para revisão.";
     }
 }
 
-// [CORREÇÃO CRÍTICA 1]: Verifica se o POST foi derrubado pelo servidor (post_max_size excedido)
 $max_post_size = ini_get('post_max_size');
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && $_SERVER['CONTENT_LENGTH'] > 0) {
     $message = "❌ Erro Fatal: O arquivo enviado é maior que o limite máximo permitido pelo servidor (" . $max_post_size . ").";
@@ -98,11 +114,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && $_SERVER['CONTENT_
 // 5. PROCESSAR O ENVIO (CHUNKED UPLOAD)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_build'])) {
     
-    // [CORREÇÃO CRÍTICA 2]: Tratamento explícito de erros de Upload (Não falhar silenciosamente)
     if (isset($_FILES['game_file'])) {
         if ($_FILES['game_file']['error'] !== UPLOAD_ERR_OK) {
             $upload_errors = [
-                UPLOAD_ERR_INI_SIZE   => "O arquivo excede o limite de upload do PHP (" . ini_get('upload_max_filesize') . ").",
+                UPLOAD_ERR_INI_SIZE   => "O arquivo excede o limite de upload do PHP.",
                 UPLOAD_ERR_FORM_SIZE  => "O arquivo excede o limite especificado no formulário HTML.",
                 UPLOAD_ERR_PARTIAL    => "O upload do arquivo foi feito apenas parcialmente (conexão caiu).",
                 UPLOAD_ERR_NO_FILE    => "Nenhum arquivo foi enviado.",
@@ -114,23 +129,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_build'])) {
             $message = "❌ Erro no Upload: " . ($upload_errors[$err_code] ?? "Erro desconhecido ($err_code).");
         } else {
             
-            // Upload Válido - Iniciar processamento
             $version_name = trim($_POST['version_name']);
             $platform = $_POST['platform'];
             $file_name = $_FILES['game_file']['name'];
             $file_size = $_FILES['game_file']['size']; 
             $tmp_name = $_FILES['game_file']['tmp_name'];
 
-            // [CORREÇÃO CRÍTICA 3]: Remove o limite de tempo de execução do PHP para permitir uploads pesados
             set_time_limit(0);
 
             try {
+                // ==========================================
+                // PLANO A: TENTAR UPLOAD PARA O GOOGLE DRIVE
+                // ==========================================
                 $client = new Google_Client();
                 $client->setClientId($client_id);
                 $client->setClientSecret($client_secret);
                 $token = $client->fetchAccessTokenWithRefreshToken($refresh_token); 
                 
-                if (isset($token['error'])) throw new Exception("Falha na autenticação: " . $token['error']);
+                if (isset($token['error'])) {
+                    throw new Exception("Falha na autenticação do token do Google.");
+                }
                 
                 $client->setAccessToken($token);
                 $driveService = new Google_Service_Drive($client);
@@ -149,7 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_build'])) {
                     'parents' => [$game_drive_folder_id]
                 ]);
 
-                // Upload Seguro em Chunks de 2MB
                 $client->setDefer(true);
                 $request = $driveService->files->create($fileMetadata);
                 $media = new Google_Http_MediaFileUpload($client, $request, $mime_type, null, true, 2 * 1024 * 1024);
@@ -164,18 +181,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_build'])) {
                 fclose($handle);
                 $client->setDefer(false);
 
-                $real_drive_id = $status['id']; 
+                if (!$status) {
+                    throw new Exception("Drive interrompido.");
+                }
+
+                $real_id = is_object($status) ? $status->getId() : $status['id']; 
                 
                 $stmt_build = $conn->prepare("INSERT INTO game_builds (game_id, version_name, platform_os, drive_file_id, file_size_bytes, is_active) VALUES (?, ?, ?, ?, ?, 1)");
-                $stmt_build->bind_param("isssi", $game_id, $version_name, $platform, $real_drive_id, $file_size);
                 
-                if ($stmt_build->execute()) {
-                    $message = "✅ Sucesso! Ficheiro enviado para a nuvem de forma segura.";
+                if ($stmt_build) {
+                    $stmt_build->bind_param("isssi", $game_id, $version_name, $platform, $real_id, $file_size);
+                    if ($stmt_build->execute()) {
+                        echo "<script>window.location.href = 'manage_builds.php?id=" . $game_id . "&msg=upload_ok';</script>";
+                        exit();
+                    } else {
+                        echo "<script>window.location.href = 'manage_builds.php?id=" . $game_id . "&msg=err_db';</script>";
+                        exit();
+                    }
+                } else {
+                    throw new Exception("Erro de SQL.");
                 }
-                $stmt_build->close();
 
             } catch (Exception $e) {
-                $message = "❌ Erro ao enviar para a Nuvem: " . $e->getMessage();
+                // ==========================================
+                // PLANO B: ROTA DE FUGA (FALLBACK LOCAL)
+                // ==========================================
+                
+                $fallback_dir = dirname(__DIR__, 2) . '/public/uploads/builds/';
+                
+                // O operador '@' suprime o Warning feio do PHP caso a permissão seja negada
+                if (!is_dir($fallback_dir)) {
+                    @mkdir($fallback_dir, 0777, true);
+                }
+                
+                // Verifica se a pasta realmente não existe ou não tem permissão
+                if (!is_dir($fallback_dir) || !is_writable($fallback_dir)) {
+                    echo "<script>window.location.href = 'manage_builds.php?id=" . $game_id . "&msg=err_local_perm';</script>";
+                    exit();
+                }
+                
+                $fallback_filename = $platform . '_' . time() . '_' . basename($file_name);
+                $fallback_path = $fallback_dir . $fallback_filename;
+                
+                // Tenta mover o arquivo silenciosamente com '@'
+                if (@move_uploaded_file($tmp_name, $fallback_path)) {
+                    $local_id = "LOCAL:" . $fallback_filename;
+                    $stmt_fallback = $conn->prepare("INSERT INTO game_builds (game_id, version_name, platform_os, drive_file_id, file_size_bytes, is_active) VALUES (?, ?, ?, ?, ?, 1)");
+                    
+                    if ($stmt_fallback) {
+                        $stmt_fallback->bind_param("isssi", $game_id, $version_name, $platform, $local_id, $file_size);
+                        if ($stmt_fallback->execute()) {
+                            echo "<script>window.location.href = 'manage_builds.php?id=" . $game_id . "&msg=upload_local';</script>";
+                            exit();
+                        } else {
+                            echo "<script>window.location.href = 'manage_builds.php?id=" . $game_id . "&msg=err_db';</script>";
+                            exit();
+                        }
+                    }
+                } else {
+                    echo "<script>window.location.href = 'manage_builds.php?id=" . $game_id . "&msg=err_local_move';</script>";
+                    exit();
+                }
             }
         }
     }
@@ -185,7 +251,6 @@ $res_builds = mysqli_query($conn, "SELECT * FROM game_builds WHERE game_id = $ga
 $total_builds = mysqli_num_rows($res_builds);
 ?>
 
-<!-- [CORREÇÃO DE UX]: Overlay de Loading Tela Cheia -->
 <style>
     #upload-loading-overlay {
         display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -206,8 +271,6 @@ $total_builds = mysqli_num_rows($res_builds);
     <h2 style="color: #fff; margin-bottom: 10px;">Enviando arquivo para a nuvem...</h2>
     <p style="color: var(--text-muted); font-size: 14px;">Isso pode demorar alguns minutos dependendo do tamanho do jogo.<br>Por favor, não feche nem atualize esta página.</p>
 </div>
-<!-- /Overlay -->
-
 <main class="dashboard-main" style="padding-bottom: 80px;">
     
     <header class="dash-header" style="justify-content: flex-start; gap: 20px; margin-bottom: 20px;">
@@ -264,8 +327,9 @@ $total_builds = mysqli_num_rows($res_builds);
                         Edição bloqueada durante a análise.
                     </div>
                 <?php else: ?>
-                    <!-- [CORREÇÃO DE UX]: Adicionado o ID no form para gatilho do Loading -->
                     <form id="form-upload-build" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="upload_build" value="1">
+                        
                         <div class="form-group">
                             <label>Plataforma</label>
                             <select name="platform" required>
@@ -287,7 +351,7 @@ $total_builds = mysqli_num_rows($res_builds);
                                 <input type="file" name="game_file" id="build-input" required>
                             </label>
                         </div>
-                        <button type="submit" name="upload_build" class="btn-submit-dev">Iniciar Upload ➔</button>
+                        <button type="submit" class="btn-submit-dev">Iniciar Upload ➔</button>
                     </form>
                 <?php endif; ?>
             </div>
@@ -341,14 +405,16 @@ $total_builds = mysqli_num_rows($res_builds);
         });
     }
 
-    // [CORREÇÃO DE UX]: Previne múltiplos cliques e mostra a tela de carregamento bloqueante
     const uploadForm = document.getElementById('form-upload-build');
     if (uploadForm) {
         uploadForm.addEventListener('submit', function() {
             document.getElementById('upload-loading-overlay').style.display = 'flex';
             const btn = this.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.innerHTML = 'Enviando...';
+            
+            setTimeout(() => {
+                btn.disabled = true;
+                btn.innerHTML = 'Enviando para a nuvem...';
+            }, 50); 
         });
     }
 </script>
