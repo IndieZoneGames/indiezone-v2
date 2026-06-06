@@ -69,7 +69,9 @@ body { background-color: #050e08; font-family: 'Inter', sans-serif; color: #e2e8
 .hero-banner {
     width: 100%; height: 550px; margin-bottom: 50px; border-radius: 16px; position: relative; overflow: hidden;
     box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(34, 197, 94, 0.2);
+    border-color: rgb(9, 44, 22);
 }
+
 .hero-overlay {
     position: absolute; inset: 0;
     background: linear-gradient(0deg, #050e08 10%, rgba(5, 14, 8, 0.4) 60%, transparent 100%),
@@ -80,7 +82,19 @@ body { background-color: #050e08; font-family: 'Inter', sans-serif; color: #e2e8
 .hero-desc { color: #a7f3d0; font-size: 18px; max-width: 1200px; line-height: 1.6; }
 .hero-actions { display: flex; align-items: center; gap: 30px; margin-top: 15px; padding-top: 20px; border-top: 1px solid rgba(34, 197, 94, 0.1); }
 .price-now { font-size: 28px; font-weight: 800; color: #fff; }
-.btn-buy { background: #22c55e; color: #000; padding: 16px 36px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 16px; }
+.btn-buy { background: #22c55e; color: #000; padding: 16px 36px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 16px; text-decoration: none; transition: 0.3s; }
+.btn-buy:hover { background: #1da04d; }
+
+/* Badge "Destaque" no hero */
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #4ade80; font-size: 11px; font-weight: 700; padding: 5px 12px;
+    border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
+}
+.hero-badge.early-access {
+    color: #fbbf24; border-color: rgba(251, 191, 36, 0.35); background: rgba(251, 191, 36, 0.15);
+}
 
 /* GRID */
 .store-container { max-width: 1400px; margin: 0 auto; padding: 20px 40px; }
@@ -92,5 +106,107 @@ body { background-color: #050e08; font-family: 'Inter', sans-serif; color: #e2e8
 .no-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(34, 197, 94, 0.05); border: 1px dashed rgba(34, 197, 94, 0.2); color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; }
 .game-info { padding: 16px; }
 .game-title { font-size: 17px; font-weight: 600; color: #fff; margin: 0 0 4px 0; }
+.game-dev { font-size: 12px; color: #64748b; margin: 0 0 8px 0; }
 .price-final { color: #22c55e; font-weight: 700; }
+.price-final.free { color: #4ade80; }
 
+.price-badge-free {
+    display: inline-block; background: rgba(34, 197, 94, 0.12); color: #4ade80;
+    font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+    border: 1px solid rgba(34, 197, 94, 0.25); letter-spacing: 0.5px;
+}
+
+/* ===================== TOOLBAR E FILTROS ===================== */
+.store-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 24px;
+}
+.toolbar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.toolbar-right { display: flex; align-items: center; gap: 10px; }
+
+/* Label de resultado */
+.results-count { font-size: 13px; color: #64748b; font-weight: 500; }
+.results-count strong { color: #22c55e; font-weight: 700; }
+
+/* Chips de filtro (preço) */
+.filter-chip {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px;
+    border-radius: 50px; font-size: 12px; font-weight: 600; text-decoration: none;
+    border: 1px solid rgba(34, 197, 94, 0.15); background: rgba(34, 197, 94, 0.04);
+    color: #94a3b8; transition: all 0.2s; white-space: nowrap;
+}
+.filter-chip:hover { border-color: rgba(34, 197, 94, 0.4); color: #22c55e; background: rgba(34, 197, 94, 0.08); }
+.filter-chip.active { background: rgba(34, 197, 94, 0.12); border-color: #22c55e; color: #22c55e; }
+.filter-chip .chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+
+/* Banner de filtro ativo */
+.active-filters-bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 20px; padding: 12px 16px; background: rgba(34, 197, 94, 0.04);
+    border: 1px solid rgba(34, 197, 94, 0.12); border-radius: 10px; font-size: 13px; color: #64748b;
+}
+.active-filters-bar .filter-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #4ade80; padding: 3px 10px; border-radius: 20px; font-weight: 600; font-size: 12px;
+}
+.clear-filters-link {
+    margin-left: auto; color: #64748b; font-size: 12px; font-weight: 600; text-decoration: none;
+    padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); transition: all 0.2s;
+}
+.clear-filters-link:hover { color: #e2e8f0; border-color: rgba(255,255,255,0.15); }
+
+/* Select de ordenação */
+.sort-select {
+    appearance: none; background: rgba(34, 197, 94, 0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2322c55e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+    border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 8px; color: #e2e8f0; font-size: 13px; font-weight: 600;
+    padding: 8px 36px 8px 14px; cursor: pointer; outline: none; font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s; min-width: 170px;
+}
+.sort-select:hover, .sort-select:focus { border-color: #22c55e; }
+
+/* ===================== PAGINAÇÃO ===================== */
+.pagination-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 48px 0 16px; flex-wrap: wrap; }
+.page-btn {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 38px; height: 38px;
+    padding: 0 10px; border-radius: 8px; border: 1px solid rgba(34, 197, 94, 0.15); background: rgba(34, 197, 94, 0.04);
+    color: #94a3b8; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s; white-space: nowrap;
+}
+.page-btn:hover { border-color: rgba(34, 197, 94, 0.4); color: #22c55e; background: rgba(34, 197, 94, 0.08); }
+.page-btn.active { background: #22c55e; border-color: #22c55e; color: #050e08; font-weight: 700; }
+.page-btn.disabled { opacity: 0.3; pointer-events: none; }
+.page-ellipsis { color: #475569; font-size: 13px; padding: 0 4px; line-height: 38px; }
+.pagination-info { text-align: center; font-size: 12px; color: #475569; margin-bottom: 32px; }
+
+/* ===================== EMPTY STATE ===================== */
+.empty-state { text-align: center; padding: 60px 20px; color: #a1a1aa; }
+.empty-icon { font-size: 3.5rem; display: block; margin-bottom: 20px; }
+.empty-title { font-size: 20px; color: #e2e8f0; margin-bottom: 8px; }
+.empty-desc { max-width: 380px; margin: 0 auto 24px; }
+.empty-btn {
+    display: inline-block; padding: 10px 24px; background: #22c55e; color: #050e08;
+    text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 14px; transition: background 0.3s;
+}
+.empty-btn:hover { background: #1da04d; }
+
+/* ===================== ANIMAÇÕES E RESPONSIVIDADE ===================== */
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.games-grid .game-card { animation: cardIn 0.3s ease both; }
+.games-grid .game-card:nth-child(1)  { animation-delay: 0.03s; }
+.games-grid .game-card:nth-child(2)  { animation-delay: 0.06s; }
+.games-grid .game-card:nth-child(3)  { animation-delay: 0.09s; }
+.games-grid .game-card:nth-child(4)  { animation-delay: 0.12s; }
+.games-grid .game-card:nth-child(5)  { animation-delay: 0.15s; }
+.games-grid .game-card:nth-child(6)  { animation-delay: 0.18s; }
+.games-grid .game-card:nth-child(7)  { animation-delay: 0.21s; }
+.games-grid .game-card:nth-child(8)  { animation-delay: 0.24s; }
+
+@media (max-width: 640px) {
+    .store-toolbar { flex-direction: column; align-items: flex-start; }
+    .toolbar-right { width: 100%; }
+    .sort-select { width: 100%; }
+}
