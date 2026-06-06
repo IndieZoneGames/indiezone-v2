@@ -1,0 +1,181 @@
+/* ==========================================================================
+   IndieZone - similares.css
+   Widget de recomendação de jogos
+   ========================================================================== */
+
+.iz-similares {
+  margin: 30px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.iz-similares__titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 20px;
+}
+
+.iz-similares__titulo span {
+  color: var(--accent);
+  font-size: 1.4rem;
+}
+
+.iz-carrossel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iz-trilho {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE e Edge */
+  padding: 10px 4px 20px;
+  flex: 1;
+}
+
+.iz-trilho::-webkit-scrollbar {
+  display: none; /* Chrome, Safari e Opera */
+}
+
+/* --- Botões de Navegação --- */
+.iz-nav {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.iz-nav:hover {
+  background: var(--surface-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* --- Cards de Jogos --- */
+.iz-card {
+  flex: 0 0 240px;
+  border-radius: 12px; /* Padrão da plataforma */
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  animation: izUp 0.4s ease calc(var(--iz-i, 0) * 50ms) both;
+}
+
+.iz-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes izUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.iz-card__img {
+  position: relative;
+  height: 140px;
+  background: #000;
+  border-bottom: 1px solid var(--border);
+}
+
+.iz-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.iz-card:hover .iz-card__img img {
+  opacity: 1;
+}
+
+.iz-card__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 20px;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.iz-card:hover .iz-card__badge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.iz-card__body {
+  padding: 12px 15px 15px;
+}
+
+.iz-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iz-card__dev {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin: 0 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iz-card__price {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+.iz-card__price--gratis {
+  color: var(--accent);
+}
+
+.iz-similares__fonte {
+  margin: 5px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-align: right;
+  font-style: italic;
+}
