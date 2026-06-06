@@ -12,8 +12,22 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // --- HELPER: Resolução de Imagens ---
-function resolveImageUrl($url) {
-    if (empty($url)) return '';
+function resolveImageUrl($url, $genre = '') {
+    if (empty($url)) {
+        $placeholders = [
+            'Ação' => 'Placeholder_acao.png',
+            'Arcade' => 'Placeholder_Arcade.png',
+            'Aventura' => 'Placeholder_Aventura.png',
+            'Estratégia' => 'Placeholder_Estrategia.png',
+            'Plataforma' => 'Placeholder_Plataforma.png',
+            'Puzzle' => 'Placeholder_Puzzle.png',
+            'RPG' => 'Placeholder_RPG.png',
+            'Simulador' => 'Placeholder_Simulador.png',
+            'Terror' => 'Placeholder_terror.png'
+        ];
+        $file = $placeholders[$genre] ?? 'Placeholder_Padrao.png';
+        return APP_URL . '/assets/img/' . $file;
+    }
     if (strpos($url, 'http') === 0) return htmlspecialchars($url);
     $clean_path = ltrim(str_replace('../', '/', $url), '/');
     return APP_URL . '/' . htmlspecialchars($clean_path);
@@ -62,7 +76,8 @@ $hero_game = null;
 if (empty($search) && empty($genre_selecionado) && $price_filter === 'all' && $page === 1) {
     // Prioriza o jogo publicado mais recentemente com base em published_at
     $query_hero = "
-        SELECT g.*, d.studio_name AS dev_name 
+        SELECT g.*, d.studio_name AS dev_name,
+               (SELECT name FROM genres gn JOIN game_genres gg ON gn.genre_id = gg.genre_id WHERE gg.game_id = g.game_id LIMIT 1) as genre_name
         FROM games g 
         JOIN developers d ON g.developer_id = d.user_id 
         WHERE g.status = 'published'
@@ -112,7 +127,8 @@ $total_pages  = max(1, (int)ceil($total_games / $per_page));
 $page = min($page, max(1, $total_pages));
 
 // --- 5b. Query de dados com LIMIT/OFFSET ---
-$data_query  = "SELECT g.*, d.studio_name AS dev_name " . $base_conditions . " ORDER BY " . $order_clause . " LIMIT ? OFFSET ?";
+$data_query  = "SELECT g.*, d.studio_name AS dev_name,
+                       (SELECT name FROM genres gn JOIN game_genres gg ON gn.genre_id = gg.genre_id WHERE gg.game_id = g.game_id LIMIT 1) as genre_name " . $base_conditions . " ORDER BY " . $order_clause . " LIMIT ? OFFSET ?";
 $data_types  = $types . "ii";
 $data_params = array_merge($params, [$per_page, $offset]);
 
@@ -203,7 +219,7 @@ $is_filtered = !empty($search) || !empty($genre_selecionado) || $price_filter !=
     <main class="store-container">
 
         <?php if ($hero_game): ?>
-            <?php $hero_cover_src = resolveImageUrl($hero_game['cover_image_url']); ?>
+            <?php $hero_cover_src = resolveImageUrl($hero_game['cover_image_url'], $hero_game['genre_name']); ?>
             <div class="hero-banner" style="background: url('<?php echo $hero_cover_src; ?>') center/cover;">
                 <div class="hero-overlay">
                     <div class="hero-content">
@@ -315,14 +331,10 @@ $is_filtered = !empty($search) || !empty($genre_selecionado) || $price_filter !=
                 <?php while ($game = mysqli_fetch_assoc($res_favs)): ?>
                     <a href="game_details.php?id=<?php echo $game['game_id']; ?>" class="game-card">
                         <div class="cover-container">
-                            <?php if (!empty($game['cover_image_url'])): ?>
-                                <img src="<?php echo resolveImageUrl($game['cover_image_url']); ?>"
-                                     alt="Capa de <?php echo htmlspecialchars($game['title']); ?>"
-                                     class="game-cover"
-                                     loading="lazy">
-                            <?php else: ?>
-                                <div class="no-image-placeholder"><span>Sem Imagem</span></div>
-                            <?php endif; ?>
+                            <img src="<?php echo resolveImageUrl($game['cover_image_url'], $game['genre_name']); ?>"
+                                 alt="Capa de <?php echo htmlspecialchars($game['title']); ?>"
+                                 class="game-cover"
+                                 loading="lazy">
                         </div>
                         <div class="game-info">
                             <h3 class="game-title"><?php echo htmlspecialchars($game['title']); ?></h3>

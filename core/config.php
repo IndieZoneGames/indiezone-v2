@@ -41,6 +41,35 @@ if (!defined('APP_URL')) {
 }
 
 /**
+ * --- HELPER GLOBAL: Resolução de Imagens ---
+ * [ARQUITETURA] Centraliza a lógica de caminhos de arquivos, garantindo que placeholders e uploads 
+ * funcionem em qualquer subdiretório do projeto através da constante APP_URL.
+ */
+if (!function_exists('resolveImageUrl')) {
+    function resolveImageUrl($url, $genre = '') {
+        if (empty($url)) {
+            $placeholders = [
+                'Ação' => 'Placeholder_acao.png',
+                'Arcade' => 'Placeholder_Arcade.png',
+                'Aventura' => 'Placeholder_Aventura.png',
+                'Estratégia' => 'Placeholder_Estrategia.png',
+                'Plataforma' => 'Placeholder_Plataforma.png',
+                'Puzzle' => 'Placeholder_Puzzle.png',
+                'RPG' => 'Placeholder_RPG.png',
+                'Simulador' => 'Placeholder_Simulador.png',
+                'Terror' => 'Placeholder_terror.png'
+            ];
+            $file = $placeholders[$genre] ?? 'Placeholder_Padrao.png';
+            return APP_URL . '/assets/img/' . $file;
+        }
+        if (strpos($url, 'http') === 0) return htmlspecialchars($url);
+        // Remove os ../ e a primeira barra para padronizar o caminho relativo ao APP_URL
+        $clean_path = ltrim(str_replace('../', '/', $url), '/');
+        return APP_URL . '/' . htmlspecialchars($clean_path);
+    }
+}
+
+/**
  * 🛡️ BLINDAGEM DE SESSÃO (TIMEOUT DE INATIVIDADE)
  */
 // [SEGURANÇA] Estabelece uma janela de inatividade máxima para prevenir ataques de Session Hijacking (sequestro de sessão), 

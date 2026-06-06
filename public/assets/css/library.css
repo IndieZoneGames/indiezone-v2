@@ -1,57 +1,534 @@
-/* --- ESTILOS EXCLUSIVOS DA BIBLIOTECA --- */
+/* =========================================
+   LIBRARY.CSS — Estilos exclusivos da Biblioteca
+   ========================================= */
 
-/* Ajuste do Header para incluir o novo botão */
+/* --- ESTRUTURA GERAL DA PÁGINA --- */
+/* Força a tag main a ter um tamanho mínimo, empurrando o footer para baixo */
+.library-main {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- HEADER NAV --- */
 .header-left {
     display: flex;
     align-items: center;
-    gap: 20px; /* Espaço entre Logo, Busca e Botão */
+    gap: 20px;
 }
 
-/* Botão "Voltar para a Loja" no Header */
 .btn-nav-header {
-    color: #22c55e;
+    color: #94a3b8;
     text-decoration: none;
     font-size: 13px;
     font-weight: 700;
     padding: 8px 16px;
     border-radius: 6px;
-    background: rgba(34, 197, 94, 0.05);
-    border: 1px solid rgba(34, 197, 94, 0.2);
     transition: all 0.3s ease;
     white-space: nowrap;
+    border: 1px solid transparent;
 }
 
+.btn-nav-header.active,
 .btn-nav-header:hover {
-    background: #22c55e;
-    color: #050e08;
+    background: rgba(34, 197, 94, 0.05);
+    border-color: rgba(34, 197, 94, 0.2);
+    color: #22c55e !important;
 }
 
-/* Título Centralizado com Estilo da Logo */
-.library-title-container {
-    width: 100%;
+/* --- HERO: TÍTULO + STATS --- */
+.library-hero {
     display: flex;
-    justify-content: center;
-    margin: 40px 0 60px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 40px 0 24px;
+    gap: 24px;
+    flex-wrap: wrap; /* Impede encavalamento */
 }
 
 .library-page-title {
     font-size: 42px;
     font-weight: 900;
     color: #22c55e;
-    letter-spacing: -2px; /* Estilo da logo IndieZone */
+    letter-spacing: -2px;
     text-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
     margin: 0;
 }
 
-/* Estilo para Biblioteca Vazia */
-.empty-library {
-    grid-column: 1/-1;
-    text-align: center;
-    padding: 80px 20px;
-    background: rgba(255,255,255,0.02);
-    border-radius: 16px;
-    border: 1px dashed rgba(34, 197, 94, 0.2);
+.library-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap; /* Impede encavalamento em telas pequenas */
 }
 
-.empty-library h3 { color: #fff; margin-bottom: 10px; font-size: 22px; }
-.empty-library p { color: #94a3b8; margin-bottom: 30px; }
+.lib-stat {
+    background: rgba(255, 255, 255, 0.03);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    text-align: center;
+    min-width: 80px;
+}
+
+.lib-stat-val {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+}
+
+.lib-stat-lbl {
+    display: block;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+}
+
+/* --- TOOLBAR REFINADA (Correção de espaçamentos) --- */
+.library-toolbar {
+    display: flex;
+    flex-wrap: wrap; /* Muito importante para responsividade */
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px; /* Espaço rigoroso entre a esquerda (contador) e direita (filtros) */
+    margin-bottom: 0;
+    padding-bottom: 16px;
+    border-bottom: 0.5px solid var(--border);
+}
+
+.results-count {
+    color: var(--text-dim);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.results-count strong {
+    color: var(--text);
+}
+
+/* Formulário de filtros e buscas */
+.library-filter-form {
+    display: flex;
+    flex-wrap: wrap; /* Garante que os elementos dentro do form não colem */
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+/* Container do input de busca */
+.library-search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+    max-width: 300px;
+}
+
+.lib-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.lib-search-input {
+    width: 100%;
+    padding: 9px 14px 9px 36px !important; /* Espaço pro ícone na esquerda */
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.lib-search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    outline: none;
+}
+
+/* Select de ordenação */
+.library-sort-wrapper {
+    flex-shrink: 0;
+}
+
+.sort-select {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 9px 32px 9px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px top 50%;
+    background-size: 10px auto;
+}
+
+.sort-select:focus,
+.sort-select:hover {
+    border-color: var(--accent);
+}
+
+.sort-select option {
+    background: var(--surface);
+    color: var(--text);
+}
+
+/* --- TOGGLE GRADE / LISTA --- */
+.view-toggle {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    height: 37px; /* Alinha com a altura dos inputs */
+}
+
+.vt-btn {
+    background: var(--surface);
+    border: none;
+    color: var(--text-dim);
+    padding: 0 12px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vt-btn.active {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.vt-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+}
+
+/* --- CHIPS DE GÊNERO --- */
+.genre-strip {
+    display: flex;
+    gap: 8px;
+    padding: 16px 0;
+    overflow-x: auto;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 24px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.genre-strip::-webkit-scrollbar {
+    display: none;
+}
+
+.genre-chip {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.genre-chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+}
+
+.genre-chip.active {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #22c55e;
+}
+
+/* --- CARDS DA BIBLIOTECA --- */
+.lib-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.lib-card:hover {
+    border-color: rgba(34, 197, 94, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    color: inherit;
+}
+
+/* Badge de release_stage no canto do card */
+.lib-card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+.badge-stage-alpha {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    backdrop-filter: blur(4px);
+}
+
+.badge-stage-beta {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fcd34d;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    backdrop-filter: blur(4px);
+}
+
+.badge-stage-early {
+    background: rgba(99, 102, 241, 0.2);
+    color: #c7d2fe;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    backdrop-filter: blur(4px);
+}
+
+/* Rodapé do card - Contém o botão */
+.lib-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.lib-play-btn {
+    padding: 8px 16px !important;
+    font-size: 12px !important;
+    font-weight: 600;
+    width: 100% !important; /* Estica o botão no card em grade */
+    background: rgba(34, 197, 94, 0.1) !important;
+    color: #22c55e !important;
+    border: 1px solid rgba(34, 197, 94, 0.3) !important;
+    border-radius: 8px !important;
+    transition: all 0.2s;
+}
+
+.lib-card:hover .lib-play-btn {
+    background: var(--accent) !important;
+    color: #fff !important;
+    border-color: var(--accent) !important;
+}
+
+/* Prevenção de quebra feia de texto */
+.game-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.game-dev {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- CARD "EXPLORAR LOJA" --- */
+.lib-explore-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: transparent;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    min-height: 220px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.lib-explore-card:hover {
+    border-color: rgba(34, 197, 94, 0.4);
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.lib-explore-icon {
+    font-size: 32px;
+    color: var(--border);
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.lib-explore-card:hover .lib-explore-icon {
+    color: rgba(34, 197, 94, 0.6);
+}
+
+.lib-explore-label {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+/* --- VISÃO EM LISTA (Corrigida) --- */
+.games-grid.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.games-grid.list-view .lib-card {
+    flex-direction: row;
+    align-items: center;
+    border-radius: 12px;
+    height: 80px;
+    overflow: hidden;
+    padding-right: 16px;
+}
+
+.games-grid.list-view .lib-card .cover-container {
+    width: 60px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: 0;
+    position: relative;
+}
+
+.games-grid.list-view .lib-card .game-cover {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+/* Esconde badge de alpha/beta na visão de lista para não poluir */
+.games-grid.list-view .lib-card-badge {
+    display: none; 
+}
+
+.games-grid.list-view .lib-card .game-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Distribui título e botão */
+    padding: 0 16px;
+    gap: 16px;
+    min-width: 0; /* Previne overflow do flex filho */
+}
+
+/* Cria um sub-container para título e desenvolvedor na lista */
+.games-grid.list-view .lib-card .game-title {
+    flex: 1;
+    font-size: 15px;
+    margin: 0;
+    min-width: 100px;
+}
+
+.games-grid.list-view .lib-card .game-dev {
+    width: 200px;
+    flex-shrink: 0;
+    font-size: 13px;
+    margin: 0;
+    color: var(--text-dim);
+}
+
+.games-grid.list-view .lib-card .lib-card-footer {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.games-grid.list-view .lib-card .lib-play-btn {
+    width: auto !important; /* Na lista o botão não precisa esticar */
+}
+
+.games-grid.list-view .lib-explore-card {
+    display: none; /* Escondido na lista para não quebrar o layout */
+}
+
+/* --- ESTADO VAZIO PREMIUM --- */
+.library-empty {
+    text-align: center;
+    padding: 80px 20px;
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px dashed var(--border);
+    grid-column: 1 / -1;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Ajuda a empurrar ainda mais se necessário */
+}
+
+.empty-icon-large {
+    font-size: 64px;
+    margin-bottom: 24px;
+    opacity: 0.8;
+}
+
+.library-empty .empty-title {
+    color: var(--text);
+    margin-bottom: 12px;
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.library-empty .empty-desc {
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    max-width: 450px;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.btn-empty-action {
+    width: auto;
+    padding: 12px 32px;
+    font-size: 15px;
+}
+
+/* Responsividade extra para a toolbar em mobile */
+@media (max-width: 768px) {
+    .library-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .library-filter-form {
+        justify-content: flex-start;
+    }
+    
+    .library-search-wrapper,
+    .library-sort-wrapper select {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .games-grid.list-view .lib-card .game-dev {
+        display: none; /* Esconde a dev no mobile na lista para caber o título */
+    }
+}

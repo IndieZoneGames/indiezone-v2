@@ -38,7 +38,7 @@ if ($is_logged_in) {
     <a href="index.php" class="legal-logo">IndieZone</a>
 
     <?php if ($is_logged_in): ?>
-      <a href="profile.php" style="display: flex; align-items: center; gap: 15px; text-decoration: none; color: #e2e8f0;">
+      <a href="index.php" style="display: flex; align-items: center; gap: 15px; text-decoration: none; color: #e2e8f0;">
         <span style="font-weight: 700; font-size: 14px;"><?php echo htmlspecialchars($primeiro_nome); ?></span>
         <img src="<?php echo $avatar_src; ?>" alt="Avatar" style="width: 42px; height: 42px; border-radius: 50%; border: 2px solid #22c55e; object-fit: cover;">
       </a>
