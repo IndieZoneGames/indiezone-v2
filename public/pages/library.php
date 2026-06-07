@@ -59,11 +59,12 @@ $display_name  = $_SESSION['display_name'] ?? $_SESSION['username'] ?? 'Usuário
 $primeiro_nome = explode(' ', $display_name)[0];
 $avatar_url    = $_SESSION['avatar_url'] ?? "https://api.dicebear.com/7.x/pixel-art/svg?seed=" . urlencode($_SESSION['username'] ?? 'user');
 
+
 // =========================================
 // 3. STATS DA BIBLIOTECA (Totais sem playtime)
 // =========================================
 $stmt_stats = mysqli_prepare($conn,
-    "SELECT COUNT(*) as total_games,
+    "SELECT COUNT(DISTINCT l.game_id) as total_games,
             COUNT(DISTINCT gg.genre_id) as total_genres
      FROM library l
      JOIN games g ON g.game_id = l.game_id
