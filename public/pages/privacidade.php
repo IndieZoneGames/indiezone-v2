@@ -4,17 +4,13 @@ session_start();
 
 $is_logged_in = isset($_SESSION['user_id']);
 if ($is_logged_in) {
-    $display_name = $_SESSION['display_name'] ?? $_SESSION['username'] ?? 'Usuário';
-    $primeiro_nome = explode(' ', $display_name)[0];
-    $avatar_url = $_SESSION['avatar_url'] ?? "https://api.dicebear.com/7.x/pixel-art/svg?seed=" . urlencode($_SESSION['username']);
-    
-    function resolveImageUrl($url) {
-        if (empty($url)) return '';
-        if (strpos($url, 'http') === 0) return htmlspecialchars($url);
-        $clean_path = ltrim(str_replace('../', '/', $url), '/');
-        return APP_URL . '/' . htmlspecialchars($clean_path);
-    }
-    $avatar_src = resolveImageUrl($avatar_url);
+  $display_name = $_SESSION['display_name'] ?? $_SESSION['username'] ?? 'Usuário';
+  $primeiro_nome = explode(' ', $display_name)[0];
+  $avatar_url = $_SESSION['avatar_url'] ?? "https://api.dicebear.com/7.x/pixel-art/svg?seed=" . urlencode($_SESSION['username']);
+
+  // Removemos a declaração da função resolveImageUrl daqui, pois ela já vem do config.php
+  // Apenas a utilizamos diretamente:
+  $avatar_src = resolveImageUrl($avatar_url);
 }
 ?>
 <!DOCTYPE html>
