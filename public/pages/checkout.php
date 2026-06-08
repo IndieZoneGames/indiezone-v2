@@ -17,15 +17,11 @@ if ($game_id <= 0) {
     die("Jogo inválido.");
 }
 
-// BUSCA O JOGO
-$query = "
-    SELECT *
-    FROM games
-    WHERE game_id = $game_id
-    LIMIT 1
-";
-
-$result = mysqli_query($conn, $query);
+// BUSCA O JOGO com prepared statement
+$stmt = mysqli_prepare($conn, "SELECT * FROM games WHERE game_id = ? LIMIT 1");
+mysqli_stmt_bind_param($stmt, 'i', $game_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
 if (!$result || mysqli_num_rows($result) == 0) {
     die("Jogo não encontrado.");
@@ -39,31 +35,24 @@ $game = mysqli_fetch_assoc($result);
 // CRIA CHECKOUT
 $session = \Stripe\Checkout\Session::create([
 
-    'payment_method_types' => [
-        'card'
-    ],
+    'payment_method_types' => ['card'],
 
     'line_items' => [[
-
         'price_data' => [
-
             'currency' => 'brl',
-
             'product_data' => [
                 'name' => $game['title']
             ],
-
-            // PREÇO DINÂMICO
             'unit_amount' => intval($game['price'] * 100),
         ],
-
         'quantity' => 1,
     ]],
 
     'mode' => 'payment',
 
+    // Passa session_id do Stripe na URL — game_id só serve de hint, a validação real é pelo session_id
     'success_url' =>
-        'http://localhost/indiezone-main/public/pages/payment_success.php?game_id=' . $game_id,
+        'http://localhost/indiezone-main/public/pages/payment_success.php?session_id={CHECKOUT_SESSION_ID}&game_id=' . $game_id,
 
     'cancel_url' =>
         'http://localhost/indiezone-main/public/pages/game_details.php?id=' . $game_id,

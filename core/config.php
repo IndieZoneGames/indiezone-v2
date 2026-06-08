@@ -34,7 +34,6 @@ if (!defined('APP_URL')) {
     
     $url_host = $_SERVER['HTTP_HOST'];
     
-    // GAMBIARRA TEMPORÁRIA E SEGURA: Monta o link direto com a sua pasta real
     $final_url = "$protocol://$url_host/indiezone-main/public";
     
     define('APP_URL', rtrim($final_url, '/'));
