@@ -163,7 +163,7 @@ $res_trending_devs = mysqli_query($conn, $query_trending_devs);
 
     <header class="store-header">
         <div class="header-left">
-            <a href="index.php" class="store-logo">IndieZone</a>
+            <a href="../index.php" class="store-logo">IndieZone</a>
             <form action="community.php" method="GET" class="search-bar">
                 <input type="hidden" name="tab" value="<?php echo htmlspecialchars($tab); ?>">
                 <span class="search-icon">🔎</span>
